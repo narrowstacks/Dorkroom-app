@@ -303,12 +303,14 @@ const FeatureCard = ({
                 width: 48,
                 height: 48,
                 borderRadius: 24,
-                backgroundColor: color,
+                backgroundColor: color + "1A", // ~10% alpha like PillLink
+                borderWidth: 1,
+                borderColor: color + "33", // ~20% alpha like PillLink
                 alignItems: "center",
                 justifyContent: "center",
               }}
             >
-              <Icon size={22} color={colors.background} />
+              <Icon size={22} color={color} />
             </Box>
             <VStack className="flex-1" style={{ gap: 4, flex: 1 }}>
               <Text
@@ -455,9 +457,40 @@ const PillLink = ({ href, title, color, icon: Icon }: PillLinkProps) => {
           zIndex: 2,
         }}
       />
-      <Box className="flex-row items-center" style={{ gap: 8 }}>
-        {Icon ? <Icon size={16} color={baseTint} /> : null}
-        <Text className="text-sm font-semibold" style={{ color: colors.text }}>
+      <Box
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "flex-start",
+          gap: 12,
+          flex: 1,
+        }}
+      >
+        {Icon ? (
+          <Box
+            style={{
+              width: 28,
+              height: 28,
+              borderRadius: 14,
+              backgroundColor: baseTint + "1A", // ~10% alpha
+              borderWidth: 1,
+              borderColor: baseTint + "33", // ~20% alpha
+              alignItems: "center",
+              justifyContent: "center",
+              flexShrink: 0, // Prevent shrinking
+            }}
+          >
+            <Icon size={14} color={baseTint} />
+          </Box>
+        ) : null}
+        <Text
+          className="text-sm font-semibold"
+          style={{
+            color: colors.text,
+            flex: 1,
+            textAlign: "left",
+          }}
+        >
           {title}
         </Text>
       </Box>
@@ -512,35 +545,39 @@ const HeroActionButton = ({
   );
 
   const baseBackground = isGhost
-    ? color + "26" // ~15% alpha (matching feature cards)
-    : color;
+    ? color + "40" // ~25% alpha - more opaque for better contrast
+    : color + "E6"; // ~90% alpha - slightly transparent for better contrast
   const hoverBackground = isGhost
-    ? color + "33" // ~20% alpha
-    : lightenHex(color, 0.08);
+    ? color + "4D" // ~30% alpha
+    : color + "F0"; // ~94% alpha
   const pressedBackground = isGhost
-    ? color + "29" // ~16% alpha
-    : darkenHex(color, 0.06);
+    ? color + "47" // ~28% alpha
+    : color + "E0"; // ~88% alpha
   const borderColor = isGhost
-    ? color + "33" // ~20% alpha (matching feature cards)
-    : withAlpha(colors.background, 0.3);
+    ? color + "66" // ~40% alpha - more visible border
+    : color + "80"; // ~50% alpha
   const shadowColor = darkenHex(color, 0.22);
   const textColor = isGhost ? colors.text : colors.background;
   const descriptionColor = isGhost
-    ? colors.text
-    : withAlpha(colors.background, 0.85);
-  const iconColor = isGhost ? color : colors.background;
+    ? colors.textMuted // Use muted text color for better contrast
+    : withAlpha(colors.background, 0.9); // More opaque description text
+  const iconColor = isGhost
+    ? href === "/(tabs)/developmentRecipes"
+      ? colors.background
+      : color // White for dev recipes, brand color for other ghost buttons
+    : colors.background; // Background for solid buttons
   const iconBackground = isGhost
-    ? color + "26" // ~15% alpha
-    : withAlpha(colors.background, 0.18);
+    ? color + "1A" // ~10% alpha for ghost
+    : withAlpha(colors.background, 0.2); // Background-based for solid
   const iconBorder = isGhost
-    ? color + "99" // ~60% alpha
-    : withAlpha(colors.background, 0.38);
+    ? color + "33" // ~20% alpha for ghost
+    : withAlpha(colors.background, 0.4); // Background-based for solid
   const arrowBackground = isGhost
-    ? color + "26" // ~15% alpha
-    : withAlpha(colors.background, 0.12);
+    ? color + "1A" // ~10% alpha to match icon
+    : withAlpha(colors.background, 0.2); // Match icon background
   const arrowBorder = isGhost
-    ? color + "80" // ~50% alpha
-    : withAlpha(colors.background, 0.3);
+    ? color + "33" // ~20% alpha to match icon
+    : withAlpha(colors.background, 0.4); // Match icon border
   const arrowColor = iconColor;
 
   const handlePress = () => {
@@ -1071,7 +1108,9 @@ export default function HomeScreen() {
                         width: 30,
                         height: 30,
                         borderRadius: 15,
-                        backgroundColor: colors.surfaceVariant,
+                        backgroundColor: colors.text + "1A", // ~10% alpha like PillLink
+                        borderWidth: 1,
+                        borderColor: colors.text + "33", // ~20% alpha like PillLink
                         alignItems: "center",
                         justifyContent: "center",
                       }}
