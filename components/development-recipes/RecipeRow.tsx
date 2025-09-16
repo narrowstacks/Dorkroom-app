@@ -62,7 +62,8 @@ export function RecipeRow({
   );
 
   // Format temperature more compactly
-  const tempDisplay = `${combination.temperatureF}°F`;
+  const isNonStandardTemp = combination.temperatureF !== 68;
+  const tempDisplay = `${combination.temperatureF}°F${isNonStandardTemp ? " ⚠" : ""}`;
 
   // Debug logging for temperature display
   debugLog(
@@ -71,6 +72,7 @@ export function RecipeRow({
       id: combination.id,
       temperatureF: combination.temperatureF,
       tempDisplay,
+      isNonStandardTemp,
       uuid: combination.uuid,
     }),
   );
@@ -99,14 +101,24 @@ export function RecipeRow({
           </Text>
         </Box>
 
-        <Box style={styles.timeCell}>
-          <Text style={[styles.paramText, { color: textColor }]}>
-            {formatTime(combination.timeMinutes)}
+        <Box style={styles.dilutionCell}>
+          <Text
+            style={[styles.paramText, { color: textColor }]}
+            numberOfLines={1}
+          >
+            {dilutionInfo}
           </Text>
         </Box>
 
         <Box style={styles.tempCell}>
-          <Text style={[styles.paramText, { color: textColor }]}>
+          <Text
+            style={[
+              styles.paramText,
+              {
+                color: isNonStandardTemp ? developmentTint : textColor,
+              },
+            ]}
+          >
             {tempDisplay}
           </Text>
         </Box>
@@ -117,12 +129,9 @@ export function RecipeRow({
           </Text>
         </Box>
 
-        <Box style={styles.dilutionCell}>
-          <Text
-            style={[styles.paramText, { color: textColor }]}
-            numberOfLines={1}
-          >
-            {dilutionInfo}
+        <Box style={styles.timeCell}>
+          <Text style={[styles.paramText, { color: textColor }]}>
+            {formatTime(combination.timeMinutes)}
           </Text>
         </Box>
       </Box>

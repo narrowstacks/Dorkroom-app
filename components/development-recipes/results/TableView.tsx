@@ -63,8 +63,8 @@ export function TableView({
           onSort={onSort}
         />
         <TableHeader
-          title="Time"
-          sortKey="timeMinutes"
+          title="Dilution"
+          sortKey="dilution"
           currentSort={sortBy}
           sortDirection={sortDirection}
           onSort={onSort}
@@ -84,8 +84,8 @@ export function TableView({
           onSort={onSort}
         />
         <TableHeader
-          title="Dilution"
-          sortKey="dilution"
+          title="Time"
+          sortKey="timeMinutes"
           currentSort={sortBy}
           sortDirection={sortDirection}
           onSort={onSort}

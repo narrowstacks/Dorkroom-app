@@ -170,8 +170,8 @@ const FeatureCard = ({
         // Subtle glow on web hover/focus and slight lift on native
         shadowColor: color,
         shadowOpacity: hovered ? 0.35 : pressed ? 0.22 : 0.16,
-        shadowRadius: hovered ? 18 : 10,
-        shadowOffset: { width: 0, height: hovered ? 10 : 5 },
+        shadowRadius: hovered ? 25 : 10,
+        // shadowOffset: { width: 0, height: hovered ? 10 : 5 },
         elevation: hovered ? 5 : 3,
       })}
     >
@@ -430,7 +430,7 @@ const PillLink = ({ href, title, color, icon: Icon }: PillLinkProps) => {
         shadowColor: baseTint,
         shadowOpacity: hovered ? 0.35 : 0.2,
         shadowRadius: hovered ? 10 : 6,
-        shadowOffset: { width: 0, height: hovered ? 6 : 3 },
+        // shadowOffset: { width: 0, height: hovered ? 6 : 3 },
         elevation: hovered ? 3 : 1,
       })}
       accessibilityRole="button"
@@ -576,7 +576,7 @@ const HeroActionButton = ({
         shadowColor,
         shadowOpacity: hovered ? 0.36 : 0.22,
         shadowRadius: hovered ? 20 : 14,
-        shadowOffset: { width: 0, height: hovered ? 10 : 6 },
+        // shadowOffset: { width: 0, height: hovered ? 10 : 6 },
         elevation: hovered ? 5 : 3,
         overflow: "hidden",
       })}
@@ -687,7 +687,7 @@ const HeroActionButton = ({
                 shadowColor: color,
                 shadowOpacity: isGhost ? 0.15 : 0.25,
                 shadowRadius: 10,
-                shadowOffset: { width: 0, height: 4 },
+                // shadowOffset: { width: 0, height: 4 },
               }}
             >
               <Icon size={20} color={iconColor} />
@@ -780,24 +780,6 @@ export default function HomeScreen() {
       icon: ClockIcon,
       tag: "Long exposure",
     },
-    {
-      href: "#",
-      title: "Dev Dilution (soon)",
-      subtitle: "Mix developer chemistry precisely",
-      color: "#666",
-      icon: FlaskConicalIcon,
-      disabled: true,
-      tag: "Chemistry",
-    },
-    {
-      href: "#",
-      title: "Push/Pull (soon)",
-      subtitle: "Adjust development for exposure",
-      color: "#666",
-      icon: ZapIcon,
-      disabled: true,
-      tag: "Lab timing",
-    },
   ] as const;
 
   const heroActions = [
@@ -843,18 +825,11 @@ export default function HomeScreen() {
   const featureSections = [
     {
       key: "active",
-      heading: "Essential calculators",
+      heading: "Calculators",
       description:
         "Everything you need to plan exposures, prints, and reciprocity fixes in the darkroom.",
       items: activeFeatures,
       basis,
-    },
-    {
-      key: "upcoming",
-      heading: "In the lab",
-      description: "New chemistry helpers and timing tools ship here first.",
-      items: upcomingFeatures,
-      basis: upcomingBasis,
     },
   ];
 
@@ -1117,7 +1092,7 @@ export default function HomeScreen() {
             return (
               <VStack key={section.key} style={{ gap: 16 }}>
                 <VStack style={{ gap: 8 }}>
-                  <Text
+                  {/* <Text
                     className="text-xs font-semibold"
                     style={{
                       color: colors.textMuted,
@@ -1126,7 +1101,7 @@ export default function HomeScreen() {
                     }}
                   >
                     {section.key === "active" ? "Tools" : "Roadmap"}
-                  </Text>
+                  </Text> */}
                   <Heading className="font-semibold" size="xl">
                     {section.heading}
                   </Heading>
