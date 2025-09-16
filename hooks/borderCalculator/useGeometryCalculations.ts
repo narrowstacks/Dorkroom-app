@@ -18,6 +18,7 @@ import {
   bordersFromGaps,
   bladeReadings,
 } from "@/utils/borderCalculations";
+import { usePerformanceMonitoring } from "./usePerformanceMonitoring";
 import type {
   BorderCalculatorState,
   OrientedDimensions,
@@ -39,6 +40,7 @@ export const useGeometryCalculations = (
   paperSizeWarning: string | null,
 ) => {
   const { width: winW, height: winH } = useWindowDimensions();
+  const { measureCalculation } = usePerformanceMonitoring(state);
 
   // Optimized preview scale calculation with better caching
   const previewScale = useMemo(() => {
@@ -60,14 +62,19 @@ export const useGeometryCalculations = (
     const { orientedPaper, orientedRatio } = orientedDimensions;
     const { minBorder } = minBorderData;
 
-    return computePrintSize(
-      orientedPaper.w,
-      orientedPaper.h,
-      orientedRatio.w,
-      orientedRatio.h,
-      minBorder,
+    return measureCalculation(
+      "computePrintSize",
+      () =>
+        computePrintSize(
+          orientedPaper.w,
+          orientedPaper.h,
+          orientedRatio.w,
+          orientedRatio.h,
+          minBorder,
+        ),
+      "geometry",
     );
-  }, [orientedDimensions, minBorderData]);
+  }, [orientedDimensions, minBorderData, measureCalculation]);
 
   // Offset calculations
   const offsetData = useMemo((): OffsetData => {
@@ -75,15 +82,20 @@ export const useGeometryCalculations = (
     const { minBorder } = minBorderData;
     const { printW, printH } = printSize;
 
-    return clampOffsets(
-      orientedPaper.w,
-      orientedPaper.h,
-      printW,
-      printH,
-      minBorder,
-      state.enableOffset ? state.horizontalOffset : 0,
-      state.enableOffset ? state.verticalOffset : 0,
-      state.ignoreMinBorder,
+    return measureCalculation(
+      "clampOffsets",
+      () =>
+        clampOffsets(
+          orientedPaper.w,
+          orientedPaper.h,
+          printW,
+          printH,
+          minBorder,
+          state.enableOffset ? state.horizontalOffset : 0,
+          state.enableOffset ? state.verticalOffset : 0,
+          state.ignoreMinBorder,
+        ),
+      "geometry",
     );
   }, [
     orientedDimensions,
@@ -93,6 +105,7 @@ export const useGeometryCalculations = (
     state.horizontalOffset,
     state.verticalOffset,
     state.ignoreMinBorder,
+    measureCalculation,
   ]);
 
   // Optimized border calculations without heavy caching overhead
@@ -103,8 +116,12 @@ export const useGeometryCalculations = (
 
   // Easel fitting calculations
   const easelData = useMemo((): EaselData => {
-    return findCenteringOffsets(paperEntry.w, paperEntry.h, state.isLandscape);
-  }, [paperEntry, state.isLandscape]);
+    return measureCalculation(
+      "findCenteringOffsets",
+      () => findCenteringOffsets(paperEntry.w, paperEntry.h, state.isLandscape),
+      "geometry",
+    );
+  }, [paperEntry, state.isLandscape, measureCalculation]);
 
   // Paper shift calculations
   const paperShift = useMemo((): PaperShift => {
@@ -127,7 +144,11 @@ export const useGeometryCalculations = (
     const { h: offH, v: offV } = offsetData;
     const { spX, spY } = paperShift;
 
-    const blades = bladeReadings(printW, printH, spX + offH, spY + offV);
+    const blades = measureCalculation(
+      "bladeReadings",
+      () => bladeReadings(printW, printH, spX + offH, spY + offV),
+      "geometry",
+    );
 
     let bladeWarning: string | null = null;
     const values = Object.values(blades);
@@ -139,7 +160,7 @@ export const useGeometryCalculations = (
         "Many easels have no markings below about 3 in.";
 
     return { blades, bladeWarning };
-  }, [printSize, offsetData, paperShift]);
+  }, [printSize, offsetData, paperShift, measureCalculation]);
 
   // Optimized final calculation assembly with reduced overhead
   const calculation = useMemo(() => {

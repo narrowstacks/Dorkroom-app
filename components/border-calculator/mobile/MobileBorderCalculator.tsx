@@ -313,9 +313,15 @@ export const MobileBorderCalculator: React.FC<MobileBorderCalculatorProps> = ({
 
   const positionDisplayValue = useMemo(() => {
     if (!enableOffset) return "Centered";
-    const hOffset = parseFloat(String(horizontalOffset));
-    const vOffset = parseFloat(String(verticalOffset));
-    return `H:${(isNaN(hOffset) ? 0 : hOffset).toFixed(1)} V:${(isNaN(vOffset) ? 0 : vOffset).toFixed(1)}`;
+    const hOffset =
+      typeof horizontalOffset === "number"
+        ? horizontalOffset
+        : parseFloat(String(horizontalOffset)) || 0;
+    const vOffset =
+      typeof verticalOffset === "number"
+        ? verticalOffset
+        : parseFloat(String(verticalOffset)) || 0;
+    return `H:${hOffset.toFixed(1)} V:${vOffset.toFixed(1)}`;
   }, [enableOffset, horizontalOffset, verticalOffset]);
 
   const presetsDisplayValue = useMemo(() => {
@@ -330,15 +336,36 @@ export const MobileBorderCalculator: React.FC<MobileBorderCalculatorProps> = ({
     () => ({
       aspectRatio,
       paperSize,
-      customAspectWidth: parseFloat(String(customAspectWidth)) || 0,
-      customAspectHeight: parseFloat(String(customAspectHeight)) || 0,
-      customPaperWidth: parseFloat(String(customPaperWidth)) || 0,
-      customPaperHeight: parseFloat(String(customPaperHeight)) || 0,
-      minBorder: parseFloat(String(minBorder)) || 0,
+      customAspectWidth:
+        typeof customAspectWidth === "number"
+          ? customAspectWidth
+          : parseFloat(String(customAspectWidth)) || 0,
+      customAspectHeight:
+        typeof customAspectHeight === "number"
+          ? customAspectHeight
+          : parseFloat(String(customAspectHeight)) || 0,
+      customPaperWidth:
+        typeof customPaperWidth === "number"
+          ? customPaperWidth
+          : parseFloat(String(customPaperWidth)) || 0,
+      customPaperHeight:
+        typeof customPaperHeight === "number"
+          ? customPaperHeight
+          : parseFloat(String(customPaperHeight)) || 0,
+      minBorder:
+        typeof minBorder === "number"
+          ? minBorder
+          : parseFloat(String(minBorder)) || 0,
       enableOffset,
       ignoreMinBorder,
-      horizontalOffset: parseFloat(String(horizontalOffset)) || 0,
-      verticalOffset: parseFloat(String(verticalOffset)) || 0,
+      horizontalOffset:
+        typeof horizontalOffset === "number"
+          ? horizontalOffset
+          : parseFloat(String(horizontalOffset)) || 0,
+      verticalOffset:
+        typeof verticalOffset === "number"
+          ? verticalOffset
+          : parseFloat(String(verticalOffset)) || 0,
       showBlades,
       isLandscape,
       isRatioFlipped,
@@ -599,17 +626,19 @@ export const MobileBorderCalculator: React.FC<MobileBorderCalculatorProps> = ({
                     setEnableOffset={setEnableOffset}
                     ignoreMinBorder={ignoreMinBorder}
                     setIgnoreMinBorder={setIgnoreMinBorder}
-                    horizontalOffset={(() => {
-                      const parsed = parseFloat(String(horizontalOffset));
-                      return isNaN(parsed) ? 0 : parsed;
-                    })()}
+                    horizontalOffset={
+                      typeof horizontalOffset === "number"
+                        ? horizontalOffset
+                        : parseFloat(String(horizontalOffset)) || 0
+                    }
                     setHorizontalOffset={(value: number) =>
                       setHorizontalOffset(String(value))
                     }
-                    verticalOffset={(() => {
-                      const parsed = parseFloat(String(verticalOffset));
-                      return isNaN(parsed) ? 0 : parsed;
-                    })()}
+                    verticalOffset={
+                      typeof verticalOffset === "number"
+                        ? verticalOffset
+                        : parseFloat(String(verticalOffset)) || 0
+                    }
                     setVerticalOffset={(value: number) =>
                       setVerticalOffset(String(value))
                     }

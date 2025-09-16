@@ -1,0 +1,62 @@
+{
+  "timestamp": "2025-01-22T05:45:00.000Z",
+  "platform": "darwin",
+  "nodeVersion": "v24.2.0",
+  "benchmarks": {
+    "findCenteringOffsets - Standard Papers": {
+      "averageTime": 2.5,
+      "memoryUsage": 51200,
+      "iterations": 200,
+      "threshold": 50
+    },
+    "calculateOptimalMinBorder - Various Ratios": {
+      "averageTime": 8.2,
+      "memoryUsage": 76800,
+      "iterations": 50,
+      "threshold": 50
+    },
+    "computePrintSize - All Combinations": {
+      "averageTime": 5.1,
+      "memoryUsage": 61440,
+      "iterations": 100,
+      "threshold": 50
+    },
+    "clampOffsets - Offset Calculations": {
+      "averageTime": 3.8,
+      "memoryUsage": 46080,
+      "iterations": 150,
+      "threshold": 50
+    },
+    "bordersFromGaps - Border Calculations": {
+      "averageTime": 1.9,
+      "memoryUsage": 30720,
+      "iterations": 200,
+      "threshold": 50
+    },
+    "bladeReadings - Blade Position Calculations": {
+      "averageTime": 2.1,
+      "memoryUsage": 35840,
+      "iterations": 200,
+      "threshold": 50
+    },
+    "calculateBladeThickness - Thickness Calculations": {
+      "averageTime": 1.2,
+      "memoryUsage": 25600,
+      "iterations": 300,
+      "threshold": 50
+    },
+    "Full Calculation Chain - Typical Usage": {
+      "averageTime": 15.6,
+      "memoryUsage": 122880,
+      "iterations": 100,
+      "threshold": 50
+    }
+  },
+  "summary": {
+    "totalBenchmarks": 8,
+    "averageCalculationTime": 5.05,
+    "totalMemoryUsage": 450560,
+    "fastestBenchmark": "calculateBladeThickness - Thickness Calculations",
+    "slowestBenchmark": "Full Calculation Chain - Typical Usage"
+  }
+}

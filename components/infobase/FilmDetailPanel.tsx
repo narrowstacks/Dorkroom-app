@@ -134,9 +134,6 @@ export function FilmDetailPanel({ film, onClose }: FilmDetailPanelProps) {
         {/* Film Image */}
         {(film.static_image_url || film.staticImageURL) && (
           <VStack space="md" style={styles.section}>
-            <Text style={[styles.sectionTitle, { color: textColor }]}>
-              Film Image
-            </Text>
             <Box
               style={[
                 styles.imageContainer,

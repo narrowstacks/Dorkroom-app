@@ -19,7 +19,11 @@
     "deploy": "bunx vercel deploy",
     "prepare": "husky install",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,md}\"",
-    "commit": "cz"
+    "commit": "cz",
+    "perf:baseline": "node scripts/establish-performance-baseline.js",
+    "perf:test": "node scripts/test-performance-monitoring.js",
+    "perf:benchmark": "jest utils/performance/__tests__/BorderCalculatorBenchmarks.test.ts --verbose",
+    "perf:monitor": "jest utils/performance/__tests__/PerformanceMonitor.test.ts --verbose"
   },
   "config": {
     "commitizen": {

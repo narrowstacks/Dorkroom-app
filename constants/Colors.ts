@@ -81,6 +81,14 @@ type ColorScheme = {
   successColor: string;
   surfaceVariant: string;
 
+  // gradient colors for themed backgrounds
+  gradientStart: string;
+  gradientMid: string;
+  gradientEnd: string;
+  heroBackground: string;
+  heroBorder: string;
+  panelBackground: string;
+
   // stop calculator
   stopCalcTint: string;
 
@@ -158,16 +166,24 @@ export const Colors: {
 
     // results box colors
     cardBackground: "#ffffff",
-    resultRowBackground: "#ececec",
-    inputBackground: "rgba(255,255,255,0.8)",
-    borderColor: "rgba(0,0,0,0.1)",
+    resultRowBackground: "#f8f9fa",
+    inputBackground: "rgba(248,249,250,0.95)",
+    borderColor: "rgba(0,0,0,0.12)",
     shadowColor: "#000000",
-    textSecondary: "rgba(0,0,0,0.7)",
-    textMuted: "rgba(0,0,0,0.6)",
+    textSecondary: "rgba(0,0,0,0.75)",
+    textMuted: "rgba(0,0,0,0.65)",
     errorColor: "#FF6B6B",
     successColor: "#4ECDC4",
-    surfaceVariant: "rgba(255,255,255,0.6)",
-    outline: "rgba(0,0,0,0.05)",
+    surfaceVariant: "rgba(248,249,250,0.85)",
+    outline: "rgba(0,0,0,0.08)",
+
+    // gradient colors for themed backgrounds - enhanced for smoother transitions
+    gradientStart: "rgba(255,255,255,0.15)",
+    gradientMid: "rgba(255,255,255,0.06)",
+    gradientEnd: "rgba(0,0,0,0.18)",
+    heroBackground: "rgba(255,255,255,0.95)",
+    heroBorder: "rgba(0,0,0,0.12)",
+    panelBackground: "rgba(248,249,250,0.9)",
     // stop exposure calculator
     stopCalcTint: pageTints.stopCalcTint,
 
@@ -252,6 +268,14 @@ export const Colors: {
     successColor: "#4ECDC4",
     surfaceVariant: "rgba(30,30,30,0.6)",
 
+    // gradient colors for themed backgrounds - enhanced for smoother transitions
+    gradientStart: "rgba(255,255,255,0.16)",
+    gradientMid: "rgba(255,255,255,0.08)",
+    gradientEnd: "rgba(0,0,0,0.26)",
+    heroBackground: "rgba(12,12,14,0.85)",
+    heroBorder: "rgba(255,255,255,0.06)",
+    panelBackground: "rgba(18,18,20,0.85)",
+
     // stop exposure calculator
     stopCalcTint: pageTints.stopCalcTint,
 
@@ -332,6 +356,14 @@ export const Colors: {
     surfaceVariant: "rgba(0,0,0,0.6)",
     outline: "rgba(255,0,0,0.1)",
 
+    // gradient colors for themed backgrounds
+    gradientStart: "rgba(255,0,0,0.12)",
+    gradientMid: "rgba(255,0,0,0.0)",
+    gradientEnd: "rgba(255,0,0,0.24)",
+    heroBackground: "rgba(0,0,0,0.95)",
+    heroBorder: "rgba(255,0,0,0.2)",
+    panelBackground: "rgba(0,0,0,0.9)",
+
     // stop exposure calculator
     stopCalcTint: "#8f0000",
 
@@ -410,6 +442,14 @@ export const Colors: {
     successColor: "#000000",
     surfaceVariant: "rgba(255,255,255,0.6)",
     outline: "rgba(0,0,0,0.2)",
+
+    // gradient colors for themed backgrounds
+    gradientStart: "rgba(0,0,0,0.12)",
+    gradientMid: "rgba(0,0,0,0.0)",
+    gradientEnd: "rgba(0,0,0,0.24)",
+    heroBackground: "rgba(255,255,255,0.95)",
+    heroBorder: "rgba(0,0,0,0.2)",
+    panelBackground: "rgba(255,255,255,0.9)",
 
     // stop calculator
     stopCalcTint: "#000000",
