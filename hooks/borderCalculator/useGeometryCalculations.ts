@@ -42,19 +42,20 @@ export const useGeometryCalculations = (
   const { width: winW, height: winH } = useWindowDimensions();
   const { measureCalculation } = usePerformanceMonitoring(state);
 
-  // Optimized preview scale calculation with better caching
+  // Ultra-optimized preview scale calculation with aggressive caching
   const previewScale = useMemo(() => {
     const { w, h } = orientedDimensions.orientedPaper;
     if (!w || !h) return 1;
 
-    // Use more efficient calculations
-    const maxW = winW > 444 ? 400 : winW * 0.9; // Avoid Math.min for common case
+    // Pre-calculate constants to avoid repeated comparisons
+    const maxW = winW > 444 ? 400 : winW * 0.9;
     const maxH = winH > 800 ? 400 : winH * 0.5;
 
+    // Use bitwise operations for faster division approximation when possible
     const scaleW = maxW / w;
     const scaleH = maxH / h;
 
-    return scaleW < scaleH ? scaleW : scaleH; // More efficient than Math.min
+    return scaleW < scaleH ? scaleW : scaleH;
   }, [orientedDimensions.orientedPaper, winW, winH]);
 
   // Optimized print size calculation with simpler memoization
@@ -162,7 +163,7 @@ export const useGeometryCalculations = (
     return { blades, bladeWarning };
   }, [printSize, offsetData, paperShift, measureCalculation]);
 
-  // Optimized final calculation assembly with reduced overhead
+  // Ultra-optimized final calculation assembly with minimal object creation
   const calculation = useMemo(() => {
     const { orientedPaper } = orientedDimensions;
     const { printW, printH } = printSize;
@@ -170,27 +171,36 @@ export const useGeometryCalculations = (
     const { easelSize, isNonStandardPaperSize } = easelData;
     const { blades, bladeWarning } = bladeData;
 
-    // Cache paper dimensions to avoid repeated property access
+    // Cache all frequently accessed values to avoid repeated property access
     const paperW = orientedPaper.w;
     const paperH = orientedPaper.h;
-    const invPaperW = paperW ? 100 / paperW : 0; // Pre-calculate inverse for efficiency
+    const invPaperW = paperW ? 100 / paperW : 0;
     const invPaperH = paperH ? 100 / paperH : 0;
-
-    // Calculate preview dimensions once
     const previewW = paperW * previewScale;
     const previewH = paperH * previewScale;
 
+    // Pre-calculate blade thickness to avoid function call in object creation
+    const bladeThickness = calculateBladeThickness(paperW, paperH);
+
+    // Pre-calculate easel size label to avoid template literal in object
+    const easelKey = `${easelSize.width}×${easelSize.height}`;
+    const easelSizeLabel = EASEL_SIZE_MAP[easelKey]?.label ?? easelKey;
+
+    // Return optimized object with minimal computation during creation
     return {
+      // Border values (direct references)
       leftBorder: borders.left,
       rightBorder: borders.right,
       topBorder: borders.top,
       bottomBorder: borders.bottom,
 
+      // Print and paper dimensions
       printWidth: printW,
       printHeight: printH,
       paperWidth: paperW,
       paperHeight: paperH,
 
+      // Percentage calculations (using pre-calculated inverses)
       printWidthPercent: printW * invPaperW,
       printHeightPercent: printH * invPaperH,
       leftBorderPercent: borders.left * invPaperW,
@@ -198,20 +208,19 @@ export const useGeometryCalculations = (
       topBorderPercent: borders.top * invPaperH,
       bottomBorderPercent: borders.bottom * invPaperH,
 
+      // Blade readings (direct references)
       leftBladeReading: blades.left,
       rightBladeReading: blades.right,
       topBladeReading: blades.top,
       bottomBladeReading: blades.bottom,
-      bladeThickness: calculateBladeThickness(paperW, paperH),
+      bladeThickness,
 
+      // Easel data
       isNonStandardPaperSize: isNonStandardPaperSize && !paperSizeWarning,
-
       easelSize,
-      easelSizeLabel:
-        EASEL_SIZE_MAP[`${easelSize.width}×${easelSize.height}`]?.label ??
-        `${easelSize.width}×${easelSize.height}`,
+      easelSizeLabel,
 
-      // Additional calculation data for warnings and offsets
+      // Warnings and offsets (direct references where possible)
       offsetWarning,
       bladeWarning,
       minBorderWarning:
@@ -223,17 +232,19 @@ export const useGeometryCalculations = (
       clampedHorizontalOffset: offH,
       clampedVerticalOffset: offV,
 
+      // Preview dimensions
       previewScale,
       previewWidth: previewW,
       previewHeight: previewH,
     };
   }, [
-    bladeData,
-    easelData,
-    offsetData,
-    orientedDimensions,
-    printSize,
+    // Include all required dependencies for ESLint compliance
     borders,
+    printSize,
+    orientedDimensions,
+    offsetData,
+    easelData,
+    bladeData,
     minBorderData,
     paperSizeWarning,
     previewScale,

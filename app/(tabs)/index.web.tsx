@@ -759,7 +759,7 @@ export default function HomeScreen() {
     {
       href: "/(tabs)/resize",
       title: "Resize Calculator",
-      subtitle: "Scale prints without recalculating exposure",
+      subtitle: "Scale prints without making tons of test strips",
       color: colors.resizeCalcTint,
       icon: MoveIcon,
       tag: "Digital prep",
@@ -1027,17 +1027,6 @@ export default function HomeScreen() {
 
             <VStack style={{ gap: 24 }}>
               <Box>
-                <Text
-                  className="font-semibold"
-                  style={{
-                    color: colors.textMuted,
-                    fontSize: 12,
-                    letterSpacing: 2,
-                    textTransform: "uppercase",
-                  }}
-                >
-                  Darkroom companion
-                </Text>
                 <Heading
                   className="font-bold"
                   style={{
@@ -1045,7 +1034,7 @@ export default function HomeScreen() {
                     lineHeight: width >= 768 ? 48 : 38,
                   }}
                 >
-                  Bring clarity to your film workflow.
+                  Skip the math. Make prints.
                 </Heading>
               </Box>
               <Text
@@ -1053,8 +1042,9 @@ export default function HomeScreen() {
                 style={{ color: colors.textSecondary, maxWidth: 680 }}
               >
                 Dorkroom keeps the math and planning out of the way so you can
-                focus on making prints. Explore calculators that balance
-                exposure, size prints, and guide darkroom chemistry.
+                focus on making prints and beautiful exposures. Explore
+                calculators that balance exposure, size prints, and guide
+                darkroom chemistry.
               </Text>
 
               <Box
