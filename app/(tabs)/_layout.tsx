@@ -6,12 +6,12 @@ import {
   TouchableOpacity,
   Text,
   StyleSheet,
-  Dimensions,
   Animated,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+// import { SafeAreaView } from "react-native-safe-area-context"; // TESTING: Removed to test if SafeAreaProvider is causing white blocks
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
+import { useViewportHandler } from "@/hooks/useViewportHandler";
 import { Colors } from "@/constants/Colors";
 import * as Haptics from "expo-haptics";
 
@@ -170,8 +170,6 @@ function TopNavigation() {
 }
 
 export default function TabLayout() {
-  // Initialize with safe default values to avoid useInsertionEffect warning
-  const [screenData, setScreenData] = useState({ width: 0, height: 0 });
   const [mobileMenuVisible, setMobileMenuVisible] = useState(false);
   const [modalScale] = useState(new Animated.Value(0));
   const [modalOpacity] = useState(new Animated.Value(0));
@@ -179,6 +177,17 @@ export default function TabLayout() {
   const colors = Colors[colorScheme];
   const router = useRouter();
   const segments = useSegments();
+
+  // Use enhanced viewport handler for better iOS Safari support
+  const {
+    width: screenWidth,
+    height: screenHeight,
+    isWeb,
+    isMobileWeb,
+    isDesktopWeb,
+  } = useViewportHandler();
+  const isNativeMobile = !isWeb;
+
   // Handle home page route detection - when on /(tabs) root, treat as "index"
   const lastSegment = segments[segments.length - 1];
   const currentRoute =
@@ -186,23 +195,6 @@ export default function TabLayout() {
 
   // Set document title for web
   useDocumentTitle(getPageTitle(currentRoute));
-
-  useEffect(() => {
-    // Get initial dimensions after mount
-    setScreenData(Dimensions.get("window"));
-
-    const onChange = (result: { window: any }) => {
-      setScreenData(result.window);
-    };
-
-    const subscription = Dimensions.addEventListener("change", onChange);
-    return () => subscription?.remove();
-  }, []);
-
-  const isWeb = Platform.OS === "web";
-  const isMobileWeb = isWeb && screenData.width <= 768; // Mobile breakpoint
-  const isDesktopWeb = isWeb && screenData.width > 768;
-  const isNativeMobile = !isWeb;
 
   const showModal = () => {
     // Add haptic feedback for hamburger menu tap
@@ -264,7 +256,7 @@ export default function TabLayout() {
   // Native mobile layout with floating hamburger menu
   if (isNativeMobile) {
     return (
-      <SafeAreaView style={{ flex: 1 }} edges={["top"]}>
+      <View style={{ flex: 1 }}>
         <View style={{ flex: 1 }}>
           <Tabs
             screenOptions={{
@@ -284,8 +276,18 @@ export default function TabLayout() {
           </Tabs>
         </View>
 
-        {/* Floating Hamburger Button */}
-        <TouchableOpacity style={styles.floatingMenuButton} onPress={showModal}>
+        {/* Floating Hamburger Button - Viewport Aware (Native) */}
+        <TouchableOpacity
+          style={[
+            styles.floatingMenuButton,
+            // Dynamic positioning based on actual viewport height for native mobile
+            {
+              bottom: Math.max(32, screenHeight * 0.05), // 5% from bottom or 32px minimum
+              right: Math.max(24, screenWidth * 0.05), // 5% from right or 24px minimum
+            },
+          ]}
+          onPress={showModal}
+        >
           <Menu size={24} color={colors.background} />
         </TouchableOpacity>
 
@@ -373,13 +375,13 @@ export default function TabLayout() {
             </Animated.View>
           </Animated.View>
         )}
-      </SafeAreaView>
+      </View>
     );
   }
 
   if (isMobileWeb) {
     return (
-      <SafeAreaView style={{ flex: 1 }} edges={["top"]}>
+      <View style={{ flex: 1 }}>
         <View style={{ flex: 1 }}>
           <Tabs
             screenOptions={{
@@ -399,8 +401,17 @@ export default function TabLayout() {
           </Tabs>
         </View>
 
-        {/* Floating Hamburger Button */}
-        <TouchableOpacity style={styles.floatingMenuButton} onPress={showModal}>
+        {/* Floating Hamburger Button - Viewport Aware (Mobile Web) */}
+        <TouchableOpacity
+          style={[
+            styles.floatingMenuButton,
+            {
+              bottom: Math.max(32, screenHeight * 0.05),
+              right: Math.max(24, screenWidth * 0.05),
+            },
+          ]}
+          onPress={showModal}
+        >
           <Menu size={24} color={colors.background} />
         </TouchableOpacity>
 
@@ -448,13 +459,13 @@ export default function TabLayout() {
             </View>
           </View>
         )}
-      </SafeAreaView>
+      </View>
     );
   }
 
   if (isDesktopWeb) {
     return (
-      <SafeAreaView style={{ flex: 1 }} edges={["top"]}>
+      <View style={{ flex: 1 }}>
         <TopNavigation />
         <View style={{ flex: 1 }}>
           <Tabs
@@ -474,13 +485,13 @@ export default function TabLayout() {
             ))}
           </Tabs>
         </View>
-      </SafeAreaView>
+      </View>
     );
   }
 
   // Original mobile layout with bottom tabs
   return (
-    <SafeAreaView style={{ flex: 1 }} edges={["top"]}>
+    <View style={{ flex: 1 }}>
       <Tabs
         screenOptions={{
           tabBarActiveTintColor: colors.tint, // This will be dynamically set per tab
@@ -566,7 +577,7 @@ export default function TabLayout() {
           }}
         />
       </Tabs>
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -619,11 +630,10 @@ const createDynamicStyles = (colors: typeof Colors.light) =>
       color: "#4CAF50",
     },
 
-    // Native mobile floating menu styles
+    // Native mobile floating menu styles - base styles (positioning handled dynamically)
     floatingMenuButton: {
       position: "absolute",
-      bottom: 32,
-      right: 24,
+      // Dynamic positioning is handled in the component via style array
       width: 56,
       height: 56,
       borderRadius: 28,
