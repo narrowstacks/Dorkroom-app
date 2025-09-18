@@ -20,6 +20,9 @@ export function CalculatorLayout({
   const backgroundColor = useThemeColor({}, "background");
   const outline = useThemeColor({}, "outline");
 
+  // Detect if we have a single child for smart centering
+  const isSingleChild = React.Children.count(children) === 1;
+
   return (
     <ScrollView
       style={[styles.container, { backgroundColor }]}
@@ -47,6 +50,10 @@ export function CalculatorLayout({
           style={[
             styles.mainContent,
             Platform.OS === "web" && isDesktop && styles.webMainContent,
+            Platform.OS === "web" &&
+              isDesktop &&
+              isSingleChild &&
+              styles.webMainContentCentered,
           ]}
         >
           {children}
@@ -109,6 +116,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 40,
     alignItems: "flex-start",
+  },
+  webMainContentCentered: {
+    justifyContent: "center",
   },
   infoContainer: {
     width: "100%",

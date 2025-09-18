@@ -17,13 +17,14 @@ interface ResultsSectionProps {
 }
 
 export function ResultRow({ label, value, isLast = false }: ResultRowProps) {
+  const textColor = useThemeColor({}, "text");
   const textSecondary = useThemeColor({}, "textSecondary");
   const outline = useThemeColor({}, "outline");
   const resultRowBackground = useThemeColor({}, "resultRowBackground");
 
   return (
     <Box
-      className={`w-full flex-row justify-between gap-4 rounded-2xl py-2 ${!isLast ? "border-b" : ""}`}
+      className={`w-full flex-row items-center justify-between gap-4 rounded-xl px-4 py-3 ${!isLast ? "border-b" : ""}`}
       style={[
         styles.resultRow,
         !isLast && { borderBottomColor: outline },
@@ -31,17 +32,19 @@ export function ResultRow({ label, value, isLast = false }: ResultRowProps) {
       ]}
     >
       <Text
-        className="flex-1 text-right text-base font-medium"
+        className="text-base font-medium"
         style={[styles.resultLabel, { color: textSecondary }]}
       >
-        {label}:
+        {label}
       </Text>
-      <Text
-        className="flex-1 text-left text-base font-semibold"
-        style={styles.resultValue}
-      >
-        {value}
-      </Text>
+      <Box className="flex-1 items-end">
+        <Text
+          className="text-lg font-semibold"
+          style={[styles.resultValue, { color: textColor }]}
+        >
+          {value}
+        </Text>
+      </Box>
     </Box>
   );
 }
@@ -119,22 +122,23 @@ const styles = StyleSheet.create({
   resultRow: {
     flexDirection: "row",
     width: "100%",
+    alignItems: "center",
     justifyContent: "space-between",
     gap: 16,
-    borderRadius: 16,
-    paddingVertical: 8,
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
     borderBottomWidth: 1,
   },
   resultLabel: {
     fontSize: 16,
-    textAlign: "right",
-    flex: 1,
     fontWeight: "500",
+    minWidth: 80,
   },
   resultValue: {
-    fontSize: 16,
-    textAlign: "left",
-    flex: 1,
+    fontSize: 18,
+    textAlign: "right",
     fontWeight: "600",
+    flex: 1,
   },
 });

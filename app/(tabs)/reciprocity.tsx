@@ -13,11 +13,7 @@ import { FILM_TYPES, EXPOSURE_PRESETS } from "@/constants/reciprocity";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { fonts } from "@/styles/common";
 import { CalculatorLayout } from "@/components/ui/layout/CalculatorLayout";
-import {
-  ResultsSection,
-  ResultRow,
-} from "@/components/ui/calculator/ResultsSection";
-import { FormSection, FormGroup } from "@/components/ui/forms/FormSection";
+import { ResultRow } from "@/components/ui/calculator/ResultsSection";
 import { InfoSection, InfoText } from "@/components/ui/calculator/InfoSection";
 import { StyledSelect } from "@/components/ui/select/StyledSelect";
 
@@ -57,234 +53,336 @@ export default function ReciprocityCalculator() {
 
   return (
     <CalculatorLayout title="Reciprocity Calculator" infoSection={infoSection}>
-      <ResultsSection show={!!calculation}>
-        <ResultRow label="Film" value={calculation?.filmName || ""} />
-        <ResultRow
-          label="Increase"
-          value={`${Math.round(calculation?.percentageIncrease || 0)}%`}
-        />
-        <ResultRow
-          label="Formula"
-          value={
-            <Text>
-              {calculation?.originalTime}
-              <Text
-                className="relative rounded border px-1 py-0.5 text-xs leading-6"
-                style={[
-                  styles.subscript,
-                  {
-                    backgroundColor: "transparent",
-                    borderColor: textColor,
-                    borderWidth: 1,
-                  },
-                ]}
-              >
-                {calculation?.factor.toFixed(2)}
-              </Text>
-              {" = "}
-              {Math.round((calculation?.adjustedTime || 0) * 10) / 10}
-            </Text>
-          }
-        />
-        <ResultRow
-          label="Metered Time"
-          value={formatTime(calculation?.originalTime || 0)}
-        />
-        <ResultRow
-          label="Adjusted Time"
-          value={formatTime(calculation?.adjustedTime || 0)}
-          isLast
-        />
-
-        {/* Visual Time Comparison */}
-        {calculation && (
-          <Box
-            className="mt-4 w-full gap-3"
-            style={styles.timeComparisonContainer}
-          >
+      {/* Unified Calculator Section */}
+      <Box
+        className="w-full max-w-2xl rounded-2xl p-6"
+        style={[
+          styles.unifiedContainer,
+          {
+            backgroundColor: surfaceVariant,
+            borderColor,
+          },
+        ]}
+      >
+        {/* Input Section */}
+        <Box className="w-full gap-6" style={styles.inputSection}>
+          {/* Film Type */}
+          <Box className="w-full gap-2">
             <Text
-              className="mb-2 text-center text-base font-semibold"
-              style={styles.timeComparisonTitle}
+              className="text-base font-medium"
+              style={[styles.inputLabel, { color: textColor }]}
             >
-              Time Comparison
+              Film Type
             </Text>
-            <Box
-              className="relative h-5 w-full overflow-hidden rounded-lg"
-              style={[
-                styles.timeBarContainer,
-                { backgroundColor: `${textSecondary}20` },
-              ]}
-            >
-              <Box
-                className="w-3/10 absolute left-0 top-0 z-10 h-full rounded-lg"
-                style={[
-                  styles.timeBar,
-                  styles.meteredTimeBar,
-                  { backgroundColor: tintColor },
-                ]}
-              />
-              <Box
-                className="absolute left-0 top-0 z-20 h-full rounded-lg"
-                style={[
-                  styles.timeBar,
-                  styles.adjustedTimeBar,
-                  {
-                    backgroundColor: `${tintColor}66`,
-                    width: `${Math.min(
-                      (calculation.adjustedTime / calculation.originalTime) *
-                        100,
-                      100,
-                    )}%`,
-                  },
-                ]}
-              />
-            </Box>
-            <Box
-              className="mt-2 w-full flex-row justify-between"
-              style={styles.timeBarLabels}
-            >
-              <Text
-                className="text-xs"
-                style={[styles.timeBarLabel, { color: textSecondary }]}
-              >
-                Metered: {formatTime(calculation.originalTime)}
-              </Text>
-              <Text
-                className="text-xs"
-                style={[styles.timeBarLabel, { color: textSecondary }]}
-              >
-                Adjusted: {formatTime(calculation.adjustedTime)}
-              </Text>
-            </Box>
+            <StyledSelect
+              value={filmType}
+              onValueChange={setFilmType}
+              items={FILM_TYPES}
+            />
           </Box>
-        )}
-      </ResultsSection>
 
-      <FormSection>
-        <FormGroup label="Film Type">
-          <StyledSelect
-            value={filmType}
-            onValueChange={setFilmType}
-            items={FILM_TYPES}
-          />
-        </FormGroup>
+          {/* Custom Factor (conditional) */}
+          {filmType === "custom" && (
+            <Box className="w-full gap-2">
+              <Text
+                className="text-base font-medium"
+                style={[styles.inputLabel, { color: textColor }]}
+              >
+                Reciprocity Factor
+              </Text>
+              <Textarea
+                className={`w-full rounded-xl border`}
+                style={{
+                  backgroundColor: inputBackground,
+                  borderColor,
+                  height: 48,
+                }}
+              >
+                <TextareaInput
+                  value={customFactor}
+                  onChangeText={setCustomFactor}
+                  keyboardType={
+                    Platform.OS === "ios" ? "decimal-pad" : "numeric"
+                  }
+                  placeholder="1.3"
+                  placeholderTextColor={textMuted}
+                  multiline={false}
+                  className={`px-4 py-3 text-base`}
+                  style={{ color: textColor }}
+                />
+              </Textarea>
+              <Text
+                className="text-xs italic"
+                style={[styles.infoText, { color: textMuted }]}
+              >
+                Higher values mean more compensation needed
+              </Text>
+            </Box>
+          )}
 
-        {filmType === "custom" && (
-          <FormGroup label="Reciprocity Factor">
+          {/* Metered Time */}
+          <Box className="w-full gap-2">
+            <Text
+              className="text-base font-medium"
+              style={[styles.inputLabel, { color: textColor }]}
+            >
+              Metered Exposure Time
+            </Text>
             <Textarea
               className={`w-full rounded-xl border`}
               style={{
                 backgroundColor: inputBackground,
-                borderColor,
+                borderColor: timeFormatError ? errorColor : borderColor,
                 height: 48,
               }}
             >
               <TextareaInput
-                value={customFactor}
-                onChangeText={setCustomFactor}
-                keyboardType={Platform.OS === "ios" ? "decimal-pad" : "numeric"}
-                placeholder="1.3"
+                value={meteredTime}
+                onChangeText={setMeteredTime}
+                placeholder="e.g. 30s, 1m30s, 2h"
                 placeholderTextColor={textMuted}
                 multiline={false}
                 className={`px-4 py-3 text-base`}
                 style={{ color: textColor }}
               />
             </Textarea>
-            <Text
-              className="mt-1.5 text-xs italic"
-              style={[styles.infoText, { color: textMuted }]}
-            >
-              Higher values mean more compensation needed
-            </Text>
-          </FormGroup>
-        )}
-
-        <FormGroup label="Metered Exposure Time">
-          <Textarea
-            className={`w-full rounded-xl border`}
-            style={{
-              backgroundColor: inputBackground,
-              borderColor: timeFormatError ? errorColor : borderColor,
-              height: 48,
-            }}
-          >
-            <TextareaInput
-              value={meteredTime}
-              onChangeText={setMeteredTime}
-              placeholder="e.g. 30s, 1m30s, 2h"
-              placeholderTextColor={textMuted}
-              multiline={false}
-              className={`px-4 py-3 text-base`}
-              style={{ color: textColor }}
-            />
-          </Textarea>
-          {formattedTime && (
-            <Text
-              className="mt-1.5 text-xs italic"
-              style={[styles.helpText, { color: textMuted }]}
-            >
-              Parsed as: {formattedTime}
-            </Text>
-          )}
-          {timeFormatError && (
-            <Text
-              className="mt-1.5 text-xs font-medium"
-              style={[styles.errorText, { color: errorColor }]}
-            >
-              {timeFormatError}
-            </Text>
-          )}
-        </FormGroup>
-
-        <FormGroup label="Common Presets">
-          <Box
-            className="mt-2 flex-row flex-wrap gap-3"
-            style={styles.presetsContainer}
-          >
-            {EXPOSURE_PRESETS.map((seconds: number) => (
-              <Button
-                key={seconds}
-                variant="outline"
-                action="default"
-                size="sm"
-                className={`min-w-20 rounded-xl border`}
-                style={{
-                  borderColor,
-                  backgroundColor: surfaceVariant,
-                }}
-                onPress={() => setMeteredTime(seconds.toString() + "s")}
+            {formattedTime && (
+              <Text
+                className="text-xs italic"
+                style={[styles.helpText, { color: textMuted }]}
               >
-                <ButtonText
-                  className={`text-sm font-medium`}
-                  style={{ color: textColor }}
-                >
-                  {formatTime(seconds)}
-                </ButtonText>
-              </Button>
-            ))}
+                Parsed as: {formattedTime}
+              </Text>
+            )}
+            {timeFormatError && (
+              <Text
+                className="text-xs font-medium"
+                style={[styles.errorText, { color: errorColor }]}
+              >
+                {timeFormatError}
+              </Text>
+            )}
           </Box>
-        </FormGroup>
-      </FormSection>
+
+          {/* Preset Buttons */}
+          <Box className="w-full gap-2">
+            <Text
+              className="text-base font-medium"
+              style={[styles.inputLabel, { color: textColor }]}
+            >
+              Common Presets
+            </Text>
+            <Box
+              className="flex-row flex-wrap gap-3"
+              style={styles.presetsContainer}
+            >
+              {EXPOSURE_PRESETS.map((seconds: number) => (
+                <Button
+                  key={seconds}
+                  variant="outline"
+                  action="default"
+                  size="sm"
+                  className={`min-w-20 rounded-xl border`}
+                  style={{
+                    borderColor,
+                    backgroundColor: inputBackground,
+                  }}
+                  onPress={() => setMeteredTime(seconds.toString() + "s")}
+                >
+                  <ButtonText
+                    className={`text-sm font-medium`}
+                    style={{ color: textColor }}
+                  >
+                    {formatTime(seconds)}
+                  </ButtonText>
+                </Button>
+              ))}
+            </Box>
+          </Box>
+        </Box>
+
+        {/* Results Section (conditional) */}
+        {calculation && (
+          <>
+            {/* Divider */}
+            <Box
+              className="my-6 h-px w-full"
+              style={[styles.divider, { backgroundColor: `${borderColor}40` }]}
+            />
+
+            {/* Results */}
+            <Box className="w-full gap-4" style={styles.resultsSection}>
+              <Text
+                className="text-lg font-semibold"
+                style={[styles.resultsTitle, { color: textColor }]}
+              >
+                Calculation Results
+              </Text>
+
+              <ResultRow
+                label="Increase"
+                value={`${Math.round(calculation.percentageIncrease)}%`}
+              />
+              <ResultRow
+                label="Formula"
+                value={
+                  <Text style={[styles.formulaContainer, { color: textColor }]}>
+                    <Text style={styles.formulaBase}>
+                      {calculation.originalTime}
+                    </Text>
+                    <Text
+                      style={[styles.formulaExponent, { color: tintColor }]}
+                    >
+                      {calculation.factor.toFixed(2)}
+                    </Text>
+                    <Text style={styles.formulaBase}>{" = "}</Text>
+                    <Text style={styles.formulaResult}>
+                      {Math.round(calculation.adjustedTime * 10) / 10}
+                    </Text>
+                  </Text>
+                }
+              />
+              <ResultRow
+                label="Adjusted Time"
+                value={formatTime(calculation.adjustedTime)}
+                isLast
+              />
+
+              {/* Visual Time Comparison */}
+              <Box
+                className="mt-4 w-full gap-3"
+                style={styles.timeComparisonContainer}
+              >
+                <Text
+                  className="mb-2 text-center text-base font-semibold"
+                  style={styles.timeComparisonTitle}
+                >
+                  Time Comparison
+                </Text>
+                <Box
+                  className="relative h-5 w-full overflow-hidden rounded-lg"
+                  style={[
+                    styles.timeBarContainer,
+                    { backgroundColor: `${textSecondary}20` },
+                  ]}
+                >
+                  <Box
+                    className="w-3/10 absolute left-0 top-0 z-10 h-full rounded-lg"
+                    style={[
+                      styles.timeBar,
+                      styles.meteredTimeBar,
+                      { backgroundColor: tintColor },
+                    ]}
+                  />
+                  <Box
+                    className="absolute left-0 top-0 z-20 h-full rounded-lg"
+                    style={[
+                      styles.timeBar,
+                      styles.adjustedTimeBar,
+                      {
+                        backgroundColor: `${tintColor}66`,
+                        width: `${Math.min(
+                          (calculation.adjustedTime /
+                            calculation.originalTime) *
+                            100,
+                          100,
+                        )}%`,
+                      },
+                    ]}
+                  />
+                </Box>
+                <Box
+                  className="mt-2 w-full flex-row justify-between"
+                  style={styles.timeBarLabels}
+                >
+                  <Text
+                    className="text-xs"
+                    style={[styles.timeBarLabel, { color: textSecondary }]}
+                  >
+                    Metered: {formatTime(calculation.originalTime)}
+                  </Text>
+                  <Text
+                    className="text-xs"
+                    style={[styles.timeBarLabel, { color: textSecondary }]}
+                  >
+                    Adjusted: {formatTime(calculation.adjustedTime)}
+                  </Text>
+                </Box>
+              </Box>
+            </Box>
+          </>
+        )}
+      </Box>
     </CalculatorLayout>
   );
 }
 
 const styles = StyleSheet.create({
-  subscript: {
-    fontSize: 12,
-    lineHeight: 25,
-    textAlignVertical: "bottom",
-    position: "relative",
-    bottom: 0,
+  unifiedContainer: {
+    borderWidth: 1,
+    borderRadius: 16,
+    padding: 24,
+    width: "100%",
+    maxWidth: 672, // max-w-2xl equivalent (42rem * 16px)
+  },
+  inputSection: {
+    gap: 24,
+  },
+  inputLabel: {
+    fontSize: 16,
+    fontWeight: "500",
+    marginBottom: 4,
+  },
+  divider: {
+    height: 1,
+    width: "100%",
+    marginVertical: 24,
+  },
+  resultsSection: {
+    gap: 16,
+  },
+  resultsTitle: {
+    fontSize: 18,
+    fontWeight: "600",
+    marginBottom: 8,
+  },
+  formulaContainer: {
+    fontSize: 18,
+    fontWeight: "600",
+    lineHeight: 22,
     fontFamily: Platform.select({
       ios: fonts.ios.primary,
       android: fonts.android.primary,
       web: fonts.web.primary,
     }),
-    paddingHorizontal: 4,
-    paddingVertical: 2,
-    borderRadius: 4,
-    borderWidth: 1,
+  },
+  formulaBase: {
+    fontSize: 18,
+    fontWeight: "600",
+  },
+  formulaExponent: {
+    fontSize: 11,
+    fontWeight: "700",
+    textAlignVertical: "top",
+    lineHeight: 11,
+    ...Platform.select({
+      ios: {
+        textAlignVertical: "top",
+        transform: [{ translateY: -6 }],
+      },
+      android: {
+        textAlignVertical: "top",
+        includeFontPadding: false,
+      },
+      web: {
+        verticalAlign: "super",
+        fontSize: 11,
+      },
+    }),
+  },
+  formulaResult: {
+    fontSize: 18,
+    fontWeight: "700",
   },
   presetsContainer: {
     flexDirection: "row",
