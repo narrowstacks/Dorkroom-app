@@ -3,9 +3,45 @@
  * There are many other ways to style your app. For example, [Nativewind](https://www.nativewind.dev/), [Tamagui](https://tamagui.dev/), [unistyles](https://reactnativeunistyles.vercel.app), etc.
  */
 
+// global colors
 const tintColorLight = "#0a7ea4";
 const tintColorDark = "#fff";
+// global brand colors (except darkroom and eInk)
+const brandColors = {
+  genericBrandColor: "#000000",
+  kodakBrandColor: "#e7a62e",
+  fujiBrandColor: "#1f9d62",
+  ilfordBrandColor: "#15d422",
+  cinestillBrandColor: "#ff0000",
+  lomographyBrandColor: "#7a33d7",
+  rolleiBrandColor: "#2c3e50",
+  adoxBrandColor: "#ff6b35",
+  agfaBrandColor: "#8b4513",
+  aristaBrandColor: "#708090",
+  efkeBrandColor: "#c0392b",
+  fomapanBrandColor: "#27ae60",
+  holgaBrandColor: "#e74c3c",
+  // Generic brands - each with unique colors
+  catlabsBrandColor: "#7b68ee",
+  ultrafineBrandColor: "#4169e1",
+  silberraBrandColor: "#c0c0c0",
+  luckyBrandColor: "#ffd700",
+  yodicaBrandColor: "#6b8e23",
+  streetCandyFilmBrandColor: "#ff69b4",
+  shanghaiFilmBrandColor: "#dc143c",
+  berggerBrandColor: "#8b4513",
+  fppBrandColor: "#ff8c00",
+  jchBrandColor: "#191970",
+  konoBrandColor: "#20b2aa",
+  psychedelicBluesBrandColor: "#4b0082",
+  revologBrandColor: "#32cd32",
+  dubblefilmBrandColor: "#00ced1",
+  legacyProBrandColor: "#2f4f4f",
+  washiBrandColor: "#dda0dd",
+  orientalBrandColor: "#800020",
+};
 
+// global page tints
 const pageTints = {
   stopCalcTint: "#9C27B0",
   resizeCalcTint: "#2196F3",
@@ -13,8 +49,10 @@ const pageTints = {
   reciprocityCalcTint: "#FF9800",
   borderCalcTint: "#4CAF50",
   developmentRecipesTint: "#ad1b1d",
+  infobaseTint: "#607D8B",
 };
 
+// theme specific colors
 type ColorScheme = {
   // general colors
   text: string;
@@ -43,6 +81,14 @@ type ColorScheme = {
   successColor: string;
   surfaceVariant: string;
 
+  // gradient colors for themed backgrounds
+  gradientStart: string;
+  gradientMid: string;
+  gradientEnd: string;
+  heroBackground: string;
+  heroBorder: string;
+  panelBackground: string;
+
   // stop calculator
   stopCalcTint: string;
 
@@ -64,6 +110,42 @@ type ColorScheme = {
 
   // development recipes
   developmentRecipesTint: string;
+
+  // infobase
+  infobaseTint: string;
+
+  // brand colors
+  genericBrandColor: string;
+  kodakBrandColor: string;
+  fujiBrandColor: string;
+  ilfordBrandColor: string;
+  cinestillBrandColor: string;
+  lomographyBrandColor: string;
+  rolleiBrandColor: string;
+  adoxBrandColor: string;
+  agfaBrandColor: string;
+  aristaBrandColor: string;
+  efkeBrandColor: string;
+  fomapanBrandColor: string;
+  holgaBrandColor: string;
+  // Generic brands
+  catlabsBrandColor: string;
+  ultrafineBrandColor: string;
+  silberraBrandColor: string;
+  luckyBrandColor: string;
+  yodicaBrandColor: string;
+  streetCandyFilmBrandColor: string;
+  shanghaiFilmBrandColor: string;
+  berggerBrandColor: string;
+  fppBrandColor: string;
+  jchBrandColor: string;
+  konoBrandColor: string;
+  psychedelicBluesBrandColor: string;
+  revologBrandColor: string;
+  dubblefilmBrandColor: string;
+  legacyProBrandColor: string;
+  washiBrandColor: string;
+  orientalBrandColor: string;
 };
 
 export const Colors: {
@@ -84,16 +166,24 @@ export const Colors: {
 
     // results box colors
     cardBackground: "#ffffff",
-    resultRowBackground: "#ececec",
-    inputBackground: "rgba(255,255,255,0.8)",
-    borderColor: "rgba(0,0,0,0.1)",
+    resultRowBackground: "#f8f9fa",
+    inputBackground: "rgba(248,249,250,0.95)",
+    borderColor: "rgba(0,0,0,0.12)",
     shadowColor: "#000000",
-    textSecondary: "rgba(0,0,0,0.7)",
-    textMuted: "rgba(0,0,0,0.6)",
+    textSecondary: "rgba(0,0,0,0.75)",
+    textMuted: "rgba(0,0,0,0.65)",
     errorColor: "#FF6B6B",
     successColor: "#4ECDC4",
-    surfaceVariant: "rgba(255,255,255,0.6)",
-    outline: "rgba(0,0,0,0.05)",
+    surfaceVariant: "rgba(248,249,250,0.85)",
+    outline: "rgba(0,0,0,0.08)",
+
+    // gradient colors for themed backgrounds - enhanced for smoother transitions
+    gradientStart: "rgba(255,255,255,0.15)",
+    gradientMid: "rgba(255,255,255,0.06)",
+    gradientEnd: "rgba(0,0,0,0.18)",
+    heroBackground: "rgba(255,255,255,0.95)",
+    heroBorder: "rgba(0,0,0,0.12)",
+    panelBackground: "rgba(248,249,250,0.9)",
     // stop exposure calculator
     stopCalcTint: pageTints.stopCalcTint,
 
@@ -115,6 +205,41 @@ export const Colors: {
 
     // development recipes
     developmentRecipesTint: pageTints.developmentRecipesTint,
+
+    // infobase
+    infobaseTint: pageTints.infobaseTint,
+
+    // brand colors
+    genericBrandColor: brandColors.genericBrandColor,
+    kodakBrandColor: brandColors.kodakBrandColor,
+    fujiBrandColor: brandColors.fujiBrandColor,
+    ilfordBrandColor: brandColors.ilfordBrandColor,
+    cinestillBrandColor: brandColors.cinestillBrandColor,
+    lomographyBrandColor: brandColors.lomographyBrandColor,
+    rolleiBrandColor: brandColors.rolleiBrandColor,
+    adoxBrandColor: brandColors.adoxBrandColor,
+    agfaBrandColor: brandColors.agfaBrandColor,
+    aristaBrandColor: brandColors.aristaBrandColor,
+    efkeBrandColor: brandColors.efkeBrandColor,
+    fomapanBrandColor: brandColors.fomapanBrandColor,
+    holgaBrandColor: brandColors.holgaBrandColor,
+    catlabsBrandColor: brandColors.catlabsBrandColor,
+    ultrafineBrandColor: brandColors.ultrafineBrandColor,
+    silberraBrandColor: brandColors.silberraBrandColor,
+    luckyBrandColor: brandColors.luckyBrandColor,
+    yodicaBrandColor: brandColors.yodicaBrandColor,
+    streetCandyFilmBrandColor: brandColors.streetCandyFilmBrandColor,
+    shanghaiFilmBrandColor: brandColors.shanghaiFilmBrandColor,
+    berggerBrandColor: brandColors.berggerBrandColor,
+    fppBrandColor: brandColors.fppBrandColor,
+    jchBrandColor: brandColors.jchBrandColor,
+    konoBrandColor: brandColors.konoBrandColor,
+    psychedelicBluesBrandColor: brandColors.psychedelicBluesBrandColor,
+    revologBrandColor: brandColors.revologBrandColor,
+    dubblefilmBrandColor: brandColors.dubblefilmBrandColor,
+    legacyProBrandColor: brandColors.legacyProBrandColor,
+    washiBrandColor: brandColors.washiBrandColor,
+    orientalBrandColor: brandColors.orientalBrandColor,
   },
   dark: {
     text: "#ECEDEE",
@@ -143,6 +268,14 @@ export const Colors: {
     successColor: "#4ECDC4",
     surfaceVariant: "rgba(30,30,30,0.6)",
 
+    // gradient colors for themed backgrounds - enhanced for smoother transitions
+    gradientStart: "rgba(255,255,255,0.16)",
+    gradientMid: "rgba(255,255,255,0.08)",
+    gradientEnd: "rgba(0,0,0,0.26)",
+    heroBackground: "rgba(12,12,14,0.85)",
+    heroBorder: "rgba(255,255,255,0.06)",
+    panelBackground: "rgba(18,18,20,0.85)",
+
     // stop exposure calculator
     stopCalcTint: pageTints.stopCalcTint,
 
@@ -164,6 +297,41 @@ export const Colors: {
 
     // development recipes
     developmentRecipesTint: pageTints.developmentRecipesTint,
+
+    // infobase
+    infobaseTint: pageTints.infobaseTint,
+
+    // brand colors
+    genericBrandColor: brandColors.genericBrandColor,
+    kodakBrandColor: brandColors.kodakBrandColor,
+    fujiBrandColor: brandColors.fujiBrandColor,
+    ilfordBrandColor: brandColors.ilfordBrandColor,
+    cinestillBrandColor: brandColors.cinestillBrandColor,
+    lomographyBrandColor: brandColors.lomographyBrandColor,
+    rolleiBrandColor: brandColors.rolleiBrandColor,
+    adoxBrandColor: brandColors.adoxBrandColor,
+    agfaBrandColor: brandColors.agfaBrandColor,
+    aristaBrandColor: brandColors.aristaBrandColor,
+    efkeBrandColor: brandColors.efkeBrandColor,
+    fomapanBrandColor: brandColors.fomapanBrandColor,
+    holgaBrandColor: brandColors.holgaBrandColor,
+    catlabsBrandColor: brandColors.catlabsBrandColor,
+    ultrafineBrandColor: brandColors.ultrafineBrandColor,
+    silberraBrandColor: brandColors.silberraBrandColor,
+    luckyBrandColor: brandColors.luckyBrandColor,
+    yodicaBrandColor: brandColors.yodicaBrandColor,
+    streetCandyFilmBrandColor: brandColors.streetCandyFilmBrandColor,
+    shanghaiFilmBrandColor: brandColors.shanghaiFilmBrandColor,
+    berggerBrandColor: brandColors.berggerBrandColor,
+    fppBrandColor: brandColors.fppBrandColor,
+    jchBrandColor: brandColors.jchBrandColor,
+    konoBrandColor: brandColors.konoBrandColor,
+    psychedelicBluesBrandColor: brandColors.psychedelicBluesBrandColor,
+    revologBrandColor: brandColors.revologBrandColor,
+    dubblefilmBrandColor: brandColors.dubblefilmBrandColor,
+    legacyProBrandColor: brandColors.legacyProBrandColor,
+    washiBrandColor: brandColors.washiBrandColor,
+    orientalBrandColor: brandColors.orientalBrandColor,
   },
   darkroom: {
     background: "#000000",
@@ -188,6 +356,14 @@ export const Colors: {
     surfaceVariant: "rgba(0,0,0,0.6)",
     outline: "rgba(255,0,0,0.1)",
 
+    // gradient colors for themed backgrounds
+    gradientStart: "rgba(255,0,0,0.12)",
+    gradientMid: "rgba(255,0,0,0.0)",
+    gradientEnd: "rgba(255,0,0,0.24)",
+    heroBackground: "rgba(0,0,0,0.95)",
+    heroBorder: "rgba(255,0,0,0.2)",
+    panelBackground: "rgba(0,0,0,0.9)",
+
     // stop exposure calculator
     stopCalcTint: "#8f0000",
 
@@ -209,6 +385,41 @@ export const Colors: {
 
     // development recipes
     developmentRecipesTint: "#8f0000",
+
+    // infobase
+    infobaseTint: "#8f0000",
+
+    // brand colors
+    genericBrandColor: "#000000",
+    kodakBrandColor: "#000000",
+    fujiBrandColor: "#000000",
+    ilfordBrandColor: "#000000",
+    cinestillBrandColor: "#000000",
+    lomographyBrandColor: "#000000",
+    rolleiBrandColor: "#000000",
+    adoxBrandColor: "#000000",
+    agfaBrandColor: "#000000",
+    aristaBrandColor: "#000000",
+    efkeBrandColor: "#000000",
+    fomapanBrandColor: "#000000",
+    holgaBrandColor: "#000000",
+    catlabsBrandColor: "#000000",
+    ultrafineBrandColor: "#000000",
+    silberraBrandColor: "#000000",
+    luckyBrandColor: "#000000",
+    yodicaBrandColor: "#000000",
+    streetCandyFilmBrandColor: "#000000",
+    shanghaiFilmBrandColor: "#000000",
+    berggerBrandColor: "#000000",
+    fppBrandColor: "#000000",
+    jchBrandColor: "#000000",
+    konoBrandColor: "#000000",
+    psychedelicBluesBrandColor: "#000000",
+    revologBrandColor: "#000000",
+    dubblefilmBrandColor: "#000000",
+    legacyProBrandColor: "#000000",
+    washiBrandColor: "#000000",
+    orientalBrandColor: "#000000",
   },
   eInk: {
     background: "#FFFFFF",
@@ -232,6 +443,14 @@ export const Colors: {
     surfaceVariant: "rgba(255,255,255,0.6)",
     outline: "rgba(0,0,0,0.2)",
 
+    // gradient colors for themed backgrounds
+    gradientStart: "rgba(0,0,0,0.12)",
+    gradientMid: "rgba(0,0,0,0.0)",
+    gradientEnd: "rgba(0,0,0,0.24)",
+    heroBackground: "rgba(255,255,255,0.95)",
+    heroBorder: "rgba(0,0,0,0.2)",
+    panelBackground: "rgba(255,255,255,0.9)",
+
     // stop calculator
     stopCalcTint: "#000000",
 
@@ -253,6 +472,41 @@ export const Colors: {
 
     // development recipes
     developmentRecipesTint: "#000000",
+
+    // infobase
+    infobaseTint: "#000000",
+
+    // brand colors
+    genericBrandColor: "#000000",
+    kodakBrandColor: "#000000",
+    fujiBrandColor: "#000000",
+    ilfordBrandColor: "#000000",
+    cinestillBrandColor: "#000000",
+    lomographyBrandColor: "#000000",
+    rolleiBrandColor: "#000000",
+    adoxBrandColor: "#000000",
+    agfaBrandColor: "#000000",
+    aristaBrandColor: "#000000",
+    efkeBrandColor: "#000000",
+    fomapanBrandColor: "#000000",
+    holgaBrandColor: "#000000",
+    catlabsBrandColor: "#000000",
+    ultrafineBrandColor: "#000000",
+    silberraBrandColor: "#000000",
+    luckyBrandColor: "#000000",
+    yodicaBrandColor: "#000000",
+    streetCandyFilmBrandColor: "#000000",
+    shanghaiFilmBrandColor: "#000000",
+    berggerBrandColor: "#000000",
+    fppBrandColor: "#000000",
+    jchBrandColor: "#000000",
+    konoBrandColor: "#000000",
+    psychedelicBluesBrandColor: "#000000",
+    revologBrandColor: "#000000",
+    dubblefilmBrandColor: "#000000",
+    legacyProBrandColor: "#000000",
+    washiBrandColor: "#000000",
+    orientalBrandColor: "#000000",
   },
 };
 

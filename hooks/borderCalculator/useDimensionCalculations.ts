@@ -13,6 +13,7 @@ import {
   ASPECT_RATIO_MAP,
   EASEL_SIZES,
 } from "@/constants/border";
+import { usePerformanceMonitoring } from "./usePerformanceMonitoring";
 import type {
   BorderCalculatorState,
   PaperEntry,
@@ -27,6 +28,8 @@ const MAX_EASEL_DIMENSION = Math.max(
 );
 
 export const useDimensionCalculations = (state: BorderCalculatorState) => {
+  const { measureCalculation } = usePerformanceMonitoring(state);
+
   // Optimized paper size calculations with better caching
   const paperEntry = useMemo((): PaperEntry => {
     if (state.paperSize === "custom") {

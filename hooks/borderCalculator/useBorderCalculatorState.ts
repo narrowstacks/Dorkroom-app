@@ -157,13 +157,24 @@ export const useBorderCalculatorState = () => {
     })();
   }, []);
 
-  // Save state changes
+  // Optimized state persistence with debouncing to reduce AsyncStorage writes
+  const debouncedPersistState = useMemo(() => {
+    let timeoutId: NodeJS.Timeout;
+    return (stateToSave: PersistableState) => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        AsyncStorage.setItem(
+          CALC_STORAGE_KEY,
+          JSON.stringify(stateToSave),
+        ).catch((e) => console.warn("Failed to save calculator state", e));
+      }, 500); // Debounce saves by 500ms to avoid excessive writes
+    };
+  }, []);
+
+  // Save state changes with debouncing
   useEffect(() => {
-    AsyncStorage.setItem(
-      CALC_STORAGE_KEY,
-      JSON.stringify(persistableState),
-    ).catch((e) => console.warn("Failed to save calculator state", e));
-  }, [persistableState]);
+    debouncedPersistState(persistableState);
+  }, [persistableState, debouncedPersistState]);
 
   return {
     state,

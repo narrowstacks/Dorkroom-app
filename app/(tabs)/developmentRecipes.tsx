@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useRef } from "react";
-import { Platform, StyleSheet, ScrollView } from "react-native";
+import { Platform, StyleSheet } from "react-native";
 import { router } from "expo-router";
 import { Box, Text, Button, ButtonText, VStack } from "@gluestack-ui/themed";
 import { Spinner } from "@/components/ui/spinner";
@@ -15,7 +15,6 @@ import {
 } from "@/components/ui/calculator/InfoSection";
 import { SearchDropdown } from "@/components/ui/search";
 import { PaginationControls } from "@/components/ui/pagination";
-import { RecipeCard } from "@/components/development-recipes";
 
 // Import new componentized parts
 import { SearchSection } from "@/components/development-recipes/filters/SearchSection";
@@ -44,6 +43,7 @@ import { useDebounce } from "@/hooks/useDebounce";
 import { usePagination } from "@/hooks/usePagination";
 import type { Film, Developer, Combination } from "@/api/dorkroom/types";
 import type { CustomRecipe } from "@/types/customRecipeTypes";
+import { debugError } from "@/utils/debugLogger";
 
 export default function DevelopmentRecipes() {
   // Get development recipes data (this loads the data and provides films/developers for URL parsing)
@@ -316,11 +316,7 @@ export default function DevelopmentRecipes() {
   const { width } = useWindowDimensions();
   const isDesktop = Platform.OS === "web" && width > 768;
   const textColor = useThemeColor({}, "text");
-  const textSecondary = useThemeColor({}, "textSecondary");
   const developmentTint = useThemeColor({}, "developmentRecipesTint");
-  const cardBackground = useThemeColor({}, "cardBackground");
-  const inputBackground = useThemeColor({}, "inputBackground");
-  const borderColor = useThemeColor({}, "borderColor");
 
   // Combined API + custom recipes for display
   const allCombinations = React.useMemo(() => {
@@ -447,6 +443,7 @@ export default function DevelopmentRecipes() {
   const {
     paginatedItems: paginatedCombinations,
     currentPage,
+    pageSize,
     totalPages,
     totalItems,
     startIndex,
@@ -456,6 +453,7 @@ export default function DevelopmentRecipes() {
     goToPage,
     goToNext,
     goToPrevious,
+    resetToFirstPage,
   } = usePagination(allCombinations, 50);
 
   // Custom recipe helpers using imported utilities
@@ -609,7 +607,7 @@ export default function DevelopmentRecipes() {
       : undefined;
     const film =
       isCustom && customRecipe
-        ? getCustomRecipeFilm(customRecipe.id)
+        ? getCustomRecipeFilm(customRecipe.id, customRecipes, getFilmById)
         : getFilmById(combination.filmStockId);
 
     // Create a new custom recipe based on the existing one
@@ -966,6 +964,7 @@ export default function DevelopmentRecipes() {
                 {/* Pagination Controls - Top */}
                 <PaginationControls
                   currentPage={currentPage}
+                  pageSize={pageSize}
                   totalPages={totalPages}
                   totalItems={totalItems}
                   startIndex={startIndex}
@@ -975,6 +974,7 @@ export default function DevelopmentRecipes() {
                   goToPage={goToPage}
                   goToNext={goToNext}
                   goToPrevious={goToPrevious}
+                  resetToFirstPage={resetToFirstPage}
                 />
 
                 {isDesktop && viewMode === "table" ? (
@@ -1027,6 +1027,7 @@ export default function DevelopmentRecipes() {
                 {/* Pagination Controls - Bottom */}
                 <PaginationControls
                   currentPage={currentPage}
+                  pageSize={pageSize}
                   totalPages={totalPages}
                   totalItems={totalItems}
                   startIndex={startIndex}
@@ -1036,6 +1037,7 @@ export default function DevelopmentRecipes() {
                   goToPage={goToPage}
                   goToNext={goToNext}
                   goToPrevious={goToPrevious}
+                  resetToFirstPage={resetToFirstPage}
                 />
               </>
             )}

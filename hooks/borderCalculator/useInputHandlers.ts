@@ -59,7 +59,7 @@ export const useInputHandlers = (
             `Border Calculator - ${key} Input Processing`,
             startTime,
           );
-      }, 100), // Reduced to 100ms for better responsiveness
+      }, 50), // Further reduced to 50ms for ultra-responsive input
     [dispatch, state],
   );
 

@@ -34,6 +34,11 @@ import {
   getEnvironmentConfig,
 } from "../../utils/platformDetection";
 import { debugLog } from "../../utils/debugLogger";
+import {
+  enhanceFilmResults,
+  enhanceDeveloperResults,
+  DEFAULT_TOKENIZED_CONFIG,
+} from "../../utils/tokenizedSearch";
 
 /**
  * Cache entry with expiration.
@@ -541,9 +546,14 @@ export class DorkroomClient {
           colorType: rawFilm.color_type || rawFilm.colorType,
           description: rawFilm.description,
           discontinued: rawFilm.discontinued ? 1 : 0,
-          manufacturerNotes: Array.isArray(rawFilm.manufacturer_notes)
-            ? rawFilm.manufacturer_notes
-            : rawFilm.manufacturerNotes || [],
+          manufacturerNotes:
+            this.parseManufacturerNotes(rawFilm.manufacturer_notes) ||
+            rawFilm.manufacturerNotes ||
+            [],
+          manufacturer_notes:
+            this.parseManufacturerNotes(rawFilm.manufacturer_notes) ||
+            rawFilm.manufacturerNotes ||
+            [],
           grainStructure: rawFilm.grain_structure || rawFilm.grainStructure,
           reciprocityFailure:
             rawFilm.reciprocity_failure || rawFilm.reciprocityFailure,
@@ -672,6 +682,91 @@ export class DorkroomClient {
       this.logger.error(`Failed to load data: ${error}`);
       throw error;
     }
+  }
+
+  /**
+   * Parse PostgreSQL array format string to JavaScript array
+   */
+  private parseManufacturerNotes(notes: any): string[] | null {
+    if (Array.isArray(notes)) {
+      debugLog("[DorkroomClient] Manufacturer notes already an array:", notes);
+      return notes;
+    }
+
+    if (typeof notes === "string") {
+      try {
+        // Handle PostgreSQL array format: {"item1","item2","item3"}
+        if (notes.startsWith("{") && notes.endsWith("}")) {
+          debugLog("[DorkroomClient] Parsing PostgreSQL array format:", notes);
+
+          // Remove outer braces and split by comma
+          const inner = notes.slice(1, -1);
+          if (inner.trim() === "") {
+            debugLog("[DorkroomClient] Empty array detected");
+            return [];
+          }
+
+          // Parse quoted items, handling escaped quotes
+          const items: string[] = [];
+          let current = "";
+          let inQuotes = false;
+          let escaped = false;
+
+          for (let i = 0; i < inner.length; i++) {
+            const char = inner[i];
+
+            if (escaped) {
+              current += char;
+              escaped = false;
+              continue;
+            }
+
+            if (char === "\\") {
+              escaped = true;
+              continue;
+            }
+
+            if (char === '"') {
+              inQuotes = !inQuotes;
+              continue;
+            }
+
+            if (char === "," && !inQuotes) {
+              items.push(current.trim());
+              current = "";
+              continue;
+            }
+
+            current += char;
+          }
+
+          if (current.trim()) {
+            items.push(current.trim());
+          }
+
+          debugLog(
+            "[DorkroomClient] Successfully parsed manufacturer notes:",
+            items,
+          );
+          return items;
+        } else {
+          debugLog(
+            "[DorkroomClient] String format not recognized as PostgreSQL array:",
+            notes,
+          );
+        }
+      } catch (error) {
+        debugLog("[DorkroomClient] Failed to parse manufacturer notes:", error);
+        return null;
+      }
+    }
+
+    debugLog(
+      "[DorkroomClient] Manufacturer notes not a string or array:",
+      typeof notes,
+      notes,
+    );
+    return null;
   }
 
   /**
@@ -991,6 +1086,7 @@ export class DorkroomClient {
 
   /**
    * Internal method for performing fuzzy search on films.
+   * Now enhanced with tokenization post-processing for better relevance.
    */
   private async performFuzzySearchFilms(
     query: string,
@@ -1006,11 +1102,31 @@ export class DorkroomClient {
     }
 
     const requestKey = `fuzzy-films-${query}-${JSON.stringify(options)}`;
-    return this.fetch<Film>("films", params, requestKey);
+
+    // Get raw fuzzy results from API
+    const rawResults = await this.fetch<Film>("films", params, requestKey);
+
+    // Apply tokenization post-processing to improve relevance
+    const enhancedResults = enhanceFilmResults(
+      query,
+      rawResults,
+      DEFAULT_TOKENIZED_CONFIG,
+    );
+
+    // Extract just the film items from the scored results
+    const processedResults = enhancedResults.map((result) => result.item);
+
+    // Apply original limit if specified, since tokenization filtering might change count
+    if (options.limit && processedResults.length > options.limit) {
+      return processedResults.slice(0, options.limit);
+    }
+
+    return processedResults;
   }
 
   /**
    * Internal method for performing fuzzy search on developers.
+   * Now enhanced with tokenization post-processing for better relevance.
    */
   private async performFuzzySearchDevelopers(
     query: string,
@@ -1026,7 +1142,30 @@ export class DorkroomClient {
     }
 
     const requestKey = `fuzzy-developers-${query}-${JSON.stringify(options)}`;
-    return this.fetch<Developer>("developers", params, requestKey);
+
+    // Get raw fuzzy results from API
+    const rawResults = await this.fetch<Developer>(
+      "developers",
+      params,
+      requestKey,
+    );
+
+    // Apply tokenization post-processing to improve relevance
+    const enhancedResults = enhanceDeveloperResults(
+      query,
+      rawResults,
+      DEFAULT_TOKENIZED_CONFIG,
+    );
+
+    // Extract just the developer items from the scored results
+    const processedResults = enhancedResults.map((result) => result.item);
+
+    // Apply original limit if specified, since tokenization filtering might change count
+    if (options.limit && processedResults.length > options.limit) {
+      return processedResults.slice(0, options.limit);
+    }
+
+    return processedResults;
   }
 
   /**
