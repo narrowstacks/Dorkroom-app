@@ -24,7 +24,6 @@ import {
   GitBranchIcon,
   HeartIcon,
   FlaskConicalIcon,
-  ZapIcon,
   ArrowRightIcon,
   FrameIcon,
 } from "lucide-react-native";
@@ -45,118 +44,40 @@ import Svg, {
 const sanitizeId = (value: string) =>
   value.toLowerCase().replace(/[^a-z0-9]+/g, "-");
 
-interface ElegantTitleProps {
-  children: string;
-  width: number;
-  colors: any;
-  style?: any;
-}
+const lightenHex = (hex: string, factor: number) => {
+  const rgb = hexToRgb(hex);
+  if (!rgb) return hex;
 
-const ElegantTitle = ({
-  children,
-  width,
-  colors,
-  style,
-}: ElegantTitleProps) => {
-  const [isHovered, setIsHovered] = React.useState(false);
-  const hoverAnimation = React.useRef(new Animated.Value(0)).current;
-  const breatheAnimation = React.useRef(new Animated.Value(0)).current;
+  const clamp = (value: number) => Math.min(255, Math.max(0, value));
+  const ratio = Math.min(1, Math.max(0, factor));
+  const mixChannel = (channel: number, target: number) =>
+    clamp(channel + (target - channel) * ratio);
+  const toHex = (value: number) =>
+    Math.round(value).toString(16).padStart(2, "0");
 
-  React.useEffect(() => {
-    // Hover animation
-    Animated.timing(hoverAnimation, {
-      toValue: isHovered ? 1 : 0,
-      duration: 200,
-      useNativeDriver: false,
-    }).start();
-  }, [isHovered, hoverAnimation]);
+  const r = mixChannel(rgb.r, 255);
+  const g = mixChannel(rgb.g, 255);
+  const b = mixChannel(rgb.b, 255);
 
-  React.useEffect(() => {
-    // Subtle breathing animation
-    const breatheLoop = () => {
-      Animated.loop(
-        Animated.sequence([
-          Animated.timing(breatheAnimation, {
-            toValue: 1,
-            duration: 3000,
-            useNativeDriver: false,
-          }),
-          Animated.timing(breatheAnimation, {
-            toValue: 0,
-            duration: 3000,
-            useNativeDriver: false,
-          }),
-        ]),
-        { iterations: -1 },
-      ).start();
-    };
-    breatheLoop();
-  }, [breatheAnimation]);
+  return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+};
 
-  // Use simple opacity animation for the glow effect
-  const breatheOpacity = breatheAnimation.interpolate({
-    inputRange: [0, 1],
-    outputRange: [0.3, 0.6],
-  });
+const darkenHex = (hex: string, factor: number) => {
+  const rgb = hexToRgb(hex);
+  if (!rgb) return hex;
 
-  const hoverScale = hoverAnimation.interpolate({
-    inputRange: [0, 1],
-    outputRange: [1, 1.005],
-  });
+  const clamp = (value: number) => Math.min(255, Math.max(0, value));
+  const ratio = Math.min(1, Math.max(0, factor));
+  const mixChannel = (channel: number, target: number) =>
+    clamp(channel + (target - channel) * ratio);
+  const toHex = (value: number) =>
+    Math.round(value).toString(16).padStart(2, "0");
 
-  const baseTextShadow = `0 2px 12px ${withAlpha(colors.borderCalcTint, 0.4)}`;
-  const hoverTextShadow = `0 4px 20px ${withAlpha(colors.borderCalcTint, 0.6)}, 0 0 40px ${withAlpha(colors.borderCalcTint, 0.2)}`;
+  const r = mixChannel(rgb.r, 0);
+  const g = mixChannel(rgb.g, 0);
+  const b = mixChannel(rgb.b, 0);
 
-  return (
-    <Animated.View
-      style={{
-        transform: [{ scale: hoverScale }],
-      }}
-      // @ts-ignore - React Native Web supports mouse events
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
-      <Animated.Text
-        className="font-bold"
-        style={{
-          ...style,
-          color: colors.text,
-          letterSpacing: width >= 768 ? -1.2 : -0.8,
-          textRendering: "optimizeLegibility",
-          textShadow: isHovered ? hoverTextShadow : baseTextShadow,
-          // @ts-ignore - React Native Web supports CSS transitions
-          transition: "letter-spacing 0.2s ease, text-shadow 0.2s ease",
-        }}
-      >
-        {children}
-      </Animated.Text>
-
-      {/* Breathing glow layer */}
-      <Animated.View
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          opacity: breatheOpacity,
-          pointerEvents: "none",
-        }}
-      >
-        <Text
-          className="font-bold"
-          style={{
-            ...style,
-            color: "transparent",
-            letterSpacing: width >= 768 ? -1.2 : -0.8,
-            textShadow: `0 0 20px ${withAlpha(colors.borderCalcTint, 0.8)}`,
-          }}
-        >
-          {children}
-        </Text>
-      </Animated.View>
-    </Animated.View>
-  );
+  return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
 };
 
 const hexToRgb = (hex: string) => {
@@ -170,33 +91,6 @@ const hexToRgb = (hex: string) => {
   const b = parseInt(normalized.substring(4, 6), 16);
   return { r, g, b };
 };
-
-const mixHex = (
-  hex: string,
-  mix: { r: number; g: number; b: number },
-  factor: number,
-) => {
-  const rgb = hexToRgb(hex);
-  if (!rgb) return hex;
-
-  const clamp = (value: number) => Math.min(255, Math.max(0, value));
-  const ratio = Math.min(1, Math.max(0, factor));
-  const mixChannel = (channel: number, target: number) =>
-    clamp(channel + (target - channel) * ratio);
-  const toHex = (value: number) =>
-    Math.round(value).toString(16).padStart(2, "0");
-
-  const r = mixChannel(rgb.r, mix.r);
-  const g = mixChannel(rgb.g, mix.g);
-  const b = mixChannel(rgb.b, mix.b);
-
-  return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
-};
-
-const lightenHex = (hex: string, factor: number) =>
-  mixHex(hex, { r: 255, g: 255, b: 255 }, factor);
-const darkenHex = (hex: string, factor: number) =>
-  mixHex(hex, { r: 0, g: 0, b: 0 }, factor);
 
 const withAlpha = (hex: string, alpha: number) => {
   if (!/^#?[0-9a-fA-F]{6,8}$/.test(hex)) return hex;
@@ -969,10 +863,6 @@ export default function HomeScreen() {
   const activeFeatures = features.filter(
     (feature) => !(feature as any).disabled,
   );
-  const upcomingFeatures = features.filter(
-    (feature) => (feature as any).disabled,
-  );
-  const upcomingBasis = columns >= 2 ? "50%" : "100%";
   const featureSections = [
     {
       key: "active",
@@ -1153,17 +1043,17 @@ export default function HomeScreen() {
 
             <VStack style={{ gap: 24 }}>
               <Box>
-                <ElegantTitle
-                  width={width}
-                  colors={colors}
+                <Heading
+                  className="font-bold"
                   style={{
                     fontSize: width >= 768 ? 50 : 40,
                     lineHeight: width >= 768 ? 55 : 45,
                     marginBottom: 8,
+                    color: colors.text,
                   }}
                 >
                   Dorkroom.art
-                </ElegantTitle>
+                </Heading>
                 <Heading
                   className="font-bold"
                   style={{
