@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import { FILM_TYPES } from "@/constants/reciprocity";
 import { ReciprocityCalculation } from "@/types/reciprocityTypes";
 
@@ -80,11 +80,13 @@ export const useReciprocityCalculator = () => {
     useState<ReciprocityCalculation | null>(null);
 
   // Format time input when it changes
-  const handleTimeChange = (text: string) => {
+  const handleTimeChange = useCallback((text: string) => {
+    const parsedSeconds = parseTimeInput(text);
+    
+    // Batch all state updates to prevent flickering
     setMeteredTime(text);
     setTimeFormatError(null);
-
-    const parsedSeconds = parseTimeInput(text);
+    
     if (parsedSeconds !== null) {
       setFormattedTime(formatTime(parsedSeconds));
     } else if (text.trim()) {
@@ -93,7 +95,7 @@ export const useReciprocityCalculator = () => {
     } else {
       setFormattedTime(null);
     }
-  };
+  }, []);
 
   // Calculate the reciprocity failure compensation
   const currentCalculation = useMemo<ReciprocityCalculation | null>(() => {

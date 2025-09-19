@@ -15,7 +15,6 @@ export default function ReciprocityCalculator() {
   const textColor = useThemeColor({}, "text");
   const borderColor = useThemeColor({}, "borderColor");
   const tintColor = useThemeColor({}, "tint");
-  const reciprocityTintColor = useThemeColor({}, "reciprocityCalcTint");
   const inputBackground = useThemeColor({}, "inputBackground");
   const textSecondary = useThemeColor({}, "textSecondary");
   const textMuted = useThemeColor({}, "textMuted");
@@ -171,7 +170,9 @@ export default function ReciprocityCalculator() {
               inputTitle="Enter Exposure Time"
               error={timeFormatError || undefined}
               helpText={
-                formattedTime ? `Parsed as: ${formattedTime}` : undefined
+                formattedTime && formattedTime !== meteredTime 
+                  ? `Parsed as: ${formattedTime}` 
+                  : undefined
               }
             />
           </Box>
@@ -290,7 +291,7 @@ export default function ReciprocityCalculator() {
                       styles.timeBar,
                       styles.adjustedTimeBar,
                       {
-                        backgroundColor: `${reciprocityTintColor}66`,
+                        backgroundColor: `${tintColor}66`,
                         width: `${Math.min(
                           (calculation.adjustedTime /
                             calculation.originalTime) *
