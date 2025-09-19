@@ -28,9 +28,9 @@ interface TimeInputProps
 type TimeUnit = "s" | "m" | "h";
 
 const TIME_UNITS: { value: TimeUnit; label: string; fullLabel: string }[] = [
-  { value: "s", label: "s", fullLabel: "Seconds" },
-  { value: "m", label: "m", fullLabel: "Minutes" },
-  { value: "h", label: "h", fullLabel: "Hours" },
+  { value: "s", label: "secs", fullLabel: "Seconds" },
+  { value: "m", label: "mins", fullLabel: "Minutes" },
+  { value: "h", label: "hours", fullLabel: "Hours" },
 ];
 
 // Unit selector buttons component
@@ -68,7 +68,8 @@ const UnitSelector: React.FC<{
             style={[
               isMobile ? styles.mobileUnitButtonText : styles.unitButtonText,
               {
-                color: selectedUnit === unit.value ? backgroundColor : textColor,
+                color:
+                  selectedUnit === unit.value ? backgroundColor : textColor,
               },
             ]}
           >

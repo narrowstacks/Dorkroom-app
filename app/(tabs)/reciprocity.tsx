@@ -298,27 +298,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "700",
   },
-  presetsGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 10,
-    justifyContent: "flex-start",
-  },
-  presetButton: {
-    borderRadius: 10,
-    borderWidth: 1,
-    paddingVertical: 10,
-    paddingHorizontal: 14,
-    minWidth: 60,
-    height: 40,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  presetButtonText: {
-    fontSize: 13,
-    fontWeight: "500",
-    textAlign: "center",
-  },
   helpText: {
     fontSize: 12,
     fontStyle: "italic",
@@ -333,46 +312,5 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontStyle: "italic",
     marginTop: 6,
-  },
-  timeComparisonContainer: {
-    width: "100%",
-    marginTop: 16,
-    gap: 12,
-  },
-  timeComparisonTitle: {
-    fontSize: 16,
-    marginBottom: 8,
-    fontWeight: "600",
-    textAlign: "center",
-  },
-  timeBarContainer: {
-    width: "100%",
-    height: 20,
-    borderRadius: 10,
-    overflow: "hidden",
-    position: "relative",
-  },
-  timeBar: {
-    position: "absolute",
-    left: 0,
-    top: 0,
-    height: "100%",
-    borderRadius: 10,
-  },
-  meteredTimeBar: {
-    width: "30%",
-    zIndex: 1,
-  },
-  adjustedTimeBar: {
-    zIndex: 2,
-  },
-  timeBarLabels: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "100%",
-    marginTop: 8,
-  },
-  timeBarLabel: {
-    fontSize: 12,
   },
 });
