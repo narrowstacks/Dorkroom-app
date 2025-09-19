@@ -82,11 +82,11 @@ export const useReciprocityCalculator = () => {
   // Format time input when it changes
   const handleTimeChange = useCallback((text: string) => {
     const parsedSeconds = parseTimeInput(text);
-    
+
     // Batch all state updates to prevent flickering
     setMeteredTime(text);
     setTimeFormatError(null);
-    
+
     if (parsedSeconds !== null) {
       setFormattedTime(formatTime(parsedSeconds));
     } else if (text.trim()) {
@@ -157,11 +157,25 @@ export const useReciprocityCalculator = () => {
   // Use the current calculation if valid, otherwise use the last valid one
   const calculation = currentCalculation || lastValidCalculation;
 
+  // Direct setter for preset values to avoid formatting feedback loop
+  const setMeteredTimeDirectly = useCallback((text: string) => {
+    setMeteredTime(text);
+    setTimeFormatError(null);
+
+    const parsedSeconds = parseTimeInput(text);
+    if (parsedSeconds !== null) {
+      setFormattedTime(formatTime(parsedSeconds));
+    } else {
+      setFormattedTime(null);
+    }
+  }, []);
+
   return {
     filmType,
     setFilmType,
     meteredTime,
     setMeteredTime: handleTimeChange,
+    setMeteredTimeDirectly,
     customFactor,
     setCustomFactor,
     formattedTime,

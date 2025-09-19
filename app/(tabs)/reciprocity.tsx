@@ -25,6 +25,7 @@ export default function ReciprocityCalculator() {
     setFilmType,
     meteredTime,
     setMeteredTime,
+    setMeteredTimeDirectly,
     customFactor,
     setCustomFactor,
     formattedTime,
@@ -50,8 +51,7 @@ export default function ReciprocityCalculator() {
           <Text style={{ fontWeight: "600" }}>
             2. Enter Metered Exposure Time{"\n"}
           </Text>
-          Input the exposure time your light meter recommends. You can use the
-          quick presets to quickly set common long exposure times.
+          Input the exposure time your light meter recommends.
         </InfoText>
         <InfoText>
           <Text style={{ fontWeight: "600" }}>3. Read Your Results{"\n"}</Text>
@@ -170,45 +170,11 @@ export default function ReciprocityCalculator() {
               inputTitle="Enter Exposure Time"
               error={timeFormatError || undefined}
               helpText={
-                formattedTime && formattedTime !== meteredTime 
-                  ? `Parsed as: ${formattedTime}` 
+                formattedTime && formattedTime !== meteredTime
+                  ? `Parsed as: ${formattedTime}`
                   : undefined
               }
             />
-          </Box>
-
-          {/* Quick Presets */}
-          <Box className="w-full gap-3">
-            <Text
-              className="text-base font-medium"
-              style={[styles.inputLabel, { color: textColor }]}
-            >
-              Quick Presets
-            </Text>
-            <Box style={styles.presetsGrid}>
-              {EXPOSURE_PRESETS.map((seconds: number) => (
-                <Button
-                  key={seconds}
-                  variant="outline"
-                  action="default"
-                  size="sm"
-                  style={[
-                    styles.presetButton,
-                    {
-                      borderColor,
-                      backgroundColor: inputBackground,
-                    },
-                  ]}
-                  onPress={() => setMeteredTime(seconds.toString() + "s")}
-                >
-                  <ButtonText
-                    style={[styles.presetButtonText, { color: textColor }]}
-                  >
-                    {formatTime(seconds)}
-                  </ButtonText>
-                </Button>
-              ))}
-            </Box>
           </Box>
         </Box>
 
@@ -229,7 +195,11 @@ export default function ReciprocityCalculator() {
               >
                 Calculation Results
               </Text>
-
+              <ResultRow
+                label="Adjusted Time"
+                value={formatTime(calculation.adjustedTime)}
+                isLast
+              />
               <ResultRow
                 label="Increase"
                 value={`${Math.round(calculation.percentageIncrease)}%`}
@@ -253,73 +223,6 @@ export default function ReciprocityCalculator() {
                   </Text>
                 }
               />
-              <ResultRow
-                label="Adjusted Time"
-                value={formatTime(calculation.adjustedTime)}
-                isLast
-              />
-
-              {/* Visual Time Comparison */}
-              <Box
-                className="mt-4 w-full gap-3"
-                style={styles.timeComparisonContainer}
-              >
-                <Text
-                  className="mb-2 text-center text-base font-semibold"
-                  style={styles.timeComparisonTitle}
-                >
-                  Time Comparison
-                </Text>
-                <Box
-                  className="relative h-5 w-full overflow-hidden rounded-lg"
-                  style={[
-                    styles.timeBarContainer,
-                    { backgroundColor: `${textSecondary}20` },
-                  ]}
-                >
-                  <Box
-                    className="w-3/10 absolute left-0 top-0 z-10 h-full rounded-lg"
-                    style={[
-                      styles.timeBar,
-                      styles.meteredTimeBar,
-                      { backgroundColor: tintColor },
-                    ]}
-                  />
-                  <Box
-                    className="absolute left-0 top-0 z-20 h-full rounded-lg"
-                    style={[
-                      styles.timeBar,
-                      styles.adjustedTimeBar,
-                      {
-                        backgroundColor: `${tintColor}66`,
-                        width: `${Math.min(
-                          (calculation.adjustedTime /
-                            calculation.originalTime) *
-                            100,
-                          100,
-                        )}%`,
-                      },
-                    ]}
-                  />
-                </Box>
-                <Box
-                  className="mt-2 w-full flex-row justify-between"
-                  style={styles.timeBarLabels}
-                >
-                  <Text
-                    className="text-xs"
-                    style={[styles.timeBarLabel, { color: textSecondary }]}
-                  >
-                    Metered: {formatTime(calculation.originalTime)}
-                  </Text>
-                  <Text
-                    className="text-xs"
-                    style={[styles.timeBarLabel, { color: textSecondary }]}
-                  >
-                    Adjusted: {formatTime(calculation.adjustedTime)}
-                  </Text>
-                </Box>
-              </Box>
             </Box>
           </>
         )}
