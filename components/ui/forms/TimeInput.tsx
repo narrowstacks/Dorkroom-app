@@ -43,6 +43,7 @@ const UnitSelector: React.FC<{
   const borderColor = useThemeColor({}, "borderColor");
   const tintColor = useThemeColor({}, "tint");
   const inputBackground = useThemeColor({}, "inputBackground");
+  const backgroundColor = useThemeColor({}, "background");
 
   return (
     <HStack
@@ -67,7 +68,7 @@ const UnitSelector: React.FC<{
             style={[
               isMobile ? styles.mobileUnitButtonText : styles.unitButtonText,
               {
-                color: selectedUnit === unit.value ? "white" : textColor,
+                color: selectedUnit === unit.value ? backgroundColor : textColor,
               },
             ]}
           >

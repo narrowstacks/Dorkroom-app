@@ -15,6 +15,7 @@ export default function ReciprocityCalculator() {
   const textColor = useThemeColor({}, "text");
   const borderColor = useThemeColor({}, "borderColor");
   const tintColor = useThemeColor({}, "tint");
+  const reciprocityTintColor = useThemeColor({}, "reciprocityCalcTint");
   const inputBackground = useThemeColor({}, "inputBackground");
   const textSecondary = useThemeColor({}, "textSecondary");
   const textMuted = useThemeColor({}, "textMuted");
@@ -34,14 +35,70 @@ export default function ReciprocityCalculator() {
   } = useReciprocityCalculator();
 
   const infoSection = (
-    <InfoSection title="What is reciprocity failure?">
-      <InfoText>
-        Film becomes less sensitive to light during long exposures, requiring
-        additional exposure time beyond what your light meter indicates.
-        Different films have different characteristics, represented by the
-        reciprocity factor.
-      </InfoText>
-    </InfoSection>
+    <>
+      <InfoSection title="How to Use This Calculator">
+        <InfoText>
+          Follow these simple steps to calculate reciprocity compensation:
+        </InfoText>
+        <InfoText>
+          <Text style={{ fontWeight: "600" }}>
+            1. Select Your Film Type{"\n"}
+          </Text>
+          Choose from common film stocks or select "Custom" to enter your own
+          reciprocity factor.
+        </InfoText>
+        <InfoText>
+          <Text style={{ fontWeight: "600" }}>
+            2. Enter Metered Exposure Time{"\n"}
+          </Text>
+          Input the exposure time your light meter recommends. You can use the
+          quick presets to quickly set common long exposure times.
+        </InfoText>
+        <InfoText>
+          <Text style={{ fontWeight: "600" }}>3. Read Your Results{"\n"}</Text>
+          The calculator shows your adjusted exposure time and the percentage
+          increase needed to compensate for reciprocity failure.
+        </InfoText>
+      </InfoSection>
+
+      <InfoSection title="What is Reciprocity Failure?">
+        <InfoText>
+          <Text style={{ fontWeight: "600" }}>The Reciprocity Law{"\n"}</Text>
+          Under normal conditions, film follows a simple rule: if you double the
+          exposure time, you can halve the light intensity and achieve the same
+          exposure. This is called the reciprocity law.
+        </InfoText>
+        <InfoText>
+          <Text style={{ fontWeight: "600" }}>When It Breaks Down{"\n"}</Text>
+          This relationship fails during very long exposures (typically longer
+          than 1 second) or very short ones (shorter than 1/1000th of a second).
+          During long exposures, film becomes progressively less responsive to
+          light.
+        </InfoText>
+        <InfoText>
+          <Text style={{ fontWeight: "600" }}>Why It Happens{"\n"}</Text>
+          The silver halide crystals in film need a minimum rate of light to
+          trigger chemical reactions. When photons arrive slowly over long
+          periods, the photochemical processes become less efficient, resulting
+          in underexposure.
+        </InfoText>
+        <InfoText>
+          <Text style={{ fontWeight: "600" }}>
+            Film-Specific Behavior{"\n"}
+          </Text>
+          Each film stock has unique reciprocity characteristics:
+          {"\n"}• Some films work well up to 10-second exposures
+          {"\n"}• Others show failure at just 2-3 seconds
+          {"\n"}• The reciprocity factor tells you how much extra time you need
+        </InfoText>
+        <InfoText>
+          <Text style={{ fontWeight: "600" }}>Common Applications{"\n"}</Text>
+          This primarily affects long-exposure photography including night
+          scenes, astrophotography, and architectural interiors where
+          understanding reciprocity failure is essential for proper exposure.
+        </InfoText>
+      </InfoSection>
+    </>
   );
 
   return (
@@ -233,7 +290,7 @@ export default function ReciprocityCalculator() {
                       styles.timeBar,
                       styles.adjustedTimeBar,
                       {
-                        backgroundColor: `${tintColor}66`,
+                        backgroundColor: `${reciprocityTintColor}66`,
                         width: `${Math.min(
                           (calculation.adjustedTime /
                             calculation.originalTime) *
