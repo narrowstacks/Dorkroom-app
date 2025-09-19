@@ -45,6 +45,120 @@ import Svg, {
 const sanitizeId = (value: string) =>
   value.toLowerCase().replace(/[^a-z0-9]+/g, "-");
 
+interface ElegantTitleProps {
+  children: string;
+  width: number;
+  colors: any;
+  style?: any;
+}
+
+const ElegantTitle = ({
+  children,
+  width,
+  colors,
+  style,
+}: ElegantTitleProps) => {
+  const [isHovered, setIsHovered] = React.useState(false);
+  const hoverAnimation = React.useRef(new Animated.Value(0)).current;
+  const breatheAnimation = React.useRef(new Animated.Value(0)).current;
+
+  React.useEffect(() => {
+    // Hover animation
+    Animated.timing(hoverAnimation, {
+      toValue: isHovered ? 1 : 0,
+      duration: 200,
+      useNativeDriver: false,
+    }).start();
+  }, [isHovered, hoverAnimation]);
+
+  React.useEffect(() => {
+    // Subtle breathing animation
+    const breatheLoop = () => {
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(breatheAnimation, {
+            toValue: 1,
+            duration: 3000,
+            useNativeDriver: false,
+          }),
+          Animated.timing(breatheAnimation, {
+            toValue: 0,
+            duration: 3000,
+            useNativeDriver: false,
+          }),
+        ]),
+        { iterations: -1 },
+      ).start();
+    };
+    breatheLoop();
+  }, [breatheAnimation]);
+
+  // Use simple opacity animation for the glow effect
+  const breatheOpacity = breatheAnimation.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0.3, 0.6],
+  });
+
+  const hoverScale = hoverAnimation.interpolate({
+    inputRange: [0, 1],
+    outputRange: [1, 1.005],
+  });
+
+  const baseTextShadow = `0 2px 12px ${withAlpha(colors.borderCalcTint, 0.4)}`;
+  const hoverTextShadow = `0 4px 20px ${withAlpha(colors.borderCalcTint, 0.6)}, 0 0 40px ${withAlpha(colors.borderCalcTint, 0.2)}`;
+
+  return (
+    <Animated.View
+      style={{
+        transform: [{ scale: hoverScale }],
+      }}
+      // @ts-ignore - React Native Web supports mouse events
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <Animated.Text
+        className="font-bold"
+        style={{
+          ...style,
+          color: colors.text,
+          letterSpacing: width >= 768 ? -1.2 : -0.8,
+          textRendering: "optimizeLegibility",
+          textShadow: isHovered ? hoverTextShadow : baseTextShadow,
+          // @ts-ignore - React Native Web supports CSS transitions
+          transition: "letter-spacing 0.2s ease, text-shadow 0.2s ease",
+        }}
+      >
+        {children}
+      </Animated.Text>
+
+      {/* Breathing glow layer */}
+      <Animated.View
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          opacity: breatheOpacity,
+          pointerEvents: "none",
+        }}
+      >
+        <Text
+          className="font-bold"
+          style={{
+            ...style,
+            color: "transparent",
+            letterSpacing: width >= 768 ? -1.2 : -0.8,
+            textShadow: `0 0 20px ${withAlpha(colors.borderCalcTint, 0.8)}`,
+          }}
+        >
+          {children}
+        </Text>
+      </Animated.View>
+    </Animated.View>
+  );
+};
+
 const hexToRgb = (hex: string) => {
   const normalized = hex.replace("#", "");
   if (!/^[0-9a-fA-F]{6}$/.test(normalized)) {
@@ -1039,6 +1153,17 @@ export default function HomeScreen() {
 
             <VStack style={{ gap: 24 }}>
               <Box>
+                <ElegantTitle
+                  width={width}
+                  colors={colors}
+                  style={{
+                    fontSize: width >= 768 ? 50 : 40,
+                    lineHeight: width >= 768 ? 55 : 45,
+                    marginBottom: 8,
+                  }}
+                >
+                  Dorkroom.art
+                </ElegantTitle>
                 <Heading
                   className="font-bold"
                   style={{

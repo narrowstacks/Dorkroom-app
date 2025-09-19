@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   TextInputProps,
+  Platform,
 } from "react-native";
 import { Text, HStack } from "@gluestack-ui/themed";
 import { Minus, Plus } from "lucide-react-native";
@@ -78,6 +79,7 @@ export const NumberInput = ({
   const textColor = useThemeColor({}, "text");
   const borderColor = useThemeColor({}, "icon");
   const placeholderTextColor = useThemeColor({}, "tabIconDefault");
+  const inputBackground = useThemeColor({}, "inputBackground");
   const inputRef = useRef<TextInput>(null);
   const isMobile = useMobileInputDetection();
 
@@ -213,11 +215,28 @@ export const NumberInput = ({
         placeholderTextColor={placeholderTextColor}
         {...rest}
       />
-      <View style={[styles.spinnerButtons, { borderLeftColor: borderColor }]}>
-        <TouchableOpacity style={styles.spinnerButton} onPress={increment}>
+      <View
+        style={[
+          styles.spinnerButtons,
+          { borderLeftColor: borderColor, backgroundColor: inputBackground },
+        ]}
+      >
+        <TouchableOpacity
+          style={[
+            styles.spinnerButton,
+            Platform.OS === "web" && { cursor: "pointer" },
+          ]}
+          onPress={increment}
+        >
           <ThemedText style={styles.spinnerButtonText}>▲</ThemedText>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.spinnerButton} onPress={decrement}>
+        <TouchableOpacity
+          style={[
+            styles.spinnerButton,
+            Platform.OS === "web" && { cursor: "pointer" },
+          ]}
+          onPress={decrement}
+        >
           <ThemedText style={styles.spinnerButtonText}>▼</ThemedText>
         </TouchableOpacity>
       </View>
@@ -227,39 +246,46 @@ export const NumberInput = ({
 
 const styles = StyleSheet.create({
   numberInputContainer: {
-    flexDirection: "row",
+    flexDirection: "column",
     alignItems: "center",
     position: "relative",
+    width: 120,
   },
   input: {
     borderWidth: 1,
-    borderRadius: 5,
-    paddingVertical: 8,
-    paddingHorizontal: 10,
-    width: 65,
+    borderRadius: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    width: 120,
     textAlign: "center",
-    paddingRight: 25,
+    paddingRight: 35,
+    fontSize: 16,
+    fontWeight: "500",
   },
   spinnerButtons: {
     position: "absolute",
-    right: 1,
-    top: 1,
-    bottom: 1,
-    width: 20,
+    right: 2,
+    top: 2,
+    bottom: 2,
+    width: 28,
     justifyContent: "space-evenly",
     alignItems: "center",
     borderLeftWidth: 1,
     backgroundColor: "transparent",
+    borderTopRightRadius: 10,
+    borderBottomRightRadius: 10,
   },
   spinnerButton: {
     width: "100%",
     height: "50%",
     justifyContent: "center",
     alignItems: "center",
+    borderRadius: 4,
   },
   spinnerButtonText: {
-    fontSize: 8,
-    lineHeight: 8,
+    fontSize: 12,
+    lineHeight: 12,
+    fontWeight: "600",
   },
   stepperButton: {
     borderWidth: 1,

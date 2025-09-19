@@ -1,13 +1,6 @@
 import React from "react";
 import { Platform, StyleSheet } from "react-native";
-import {
-  Textarea,
-  TextareaInput,
-  Button,
-  ButtonText,
-  Box,
-  Text,
-} from "@gluestack-ui/themed";
+import { Button, ButtonText, Box, Text } from "@gluestack-ui/themed";
 import { useReciprocityCalculator } from "@/hooks/useReciprocityCalculator";
 import { FILM_TYPES, EXPOSURE_PRESETS } from "@/constants/reciprocity";
 import { useThemeColor } from "@/hooks/useThemeColor";
@@ -16,6 +9,7 @@ import { CalculatorLayout } from "@/components/ui/layout/CalculatorLayout";
 import { ResultRow } from "@/components/ui/calculator/ResultsSection";
 import { InfoSection, InfoText } from "@/components/ui/calculator/InfoSection";
 import { StyledSelect } from "@/components/ui/select/StyledSelect";
+import { TimeInput, NumberInput } from "@/components/ui/forms";
 
 export default function ReciprocityCalculator() {
   const textColor = useThemeColor({}, "text");
@@ -24,7 +18,6 @@ export default function ReciprocityCalculator() {
   const inputBackground = useThemeColor({}, "inputBackground");
   const textSecondary = useThemeColor({}, "textSecondary");
   const textMuted = useThemeColor({}, "textMuted");
-  const errorColor = useThemeColor({}, "errorColor");
   const surfaceVariant = useThemeColor({}, "surfaceVariant");
 
   const {
@@ -90,27 +83,13 @@ export default function ReciprocityCalculator() {
               >
                 Reciprocity Factor
               </Text>
-              <Textarea
-                className={`w-full rounded-xl border`}
-                style={{
-                  backgroundColor: inputBackground,
-                  borderColor,
-                  height: 48,
-                }}
-              >
-                <TextareaInput
-                  value={customFactor}
-                  onChangeText={setCustomFactor}
-                  keyboardType={
-                    Platform.OS === "ios" ? "decimal-pad" : "numeric"
-                  }
-                  placeholder="1.3"
-                  placeholderTextColor={textMuted}
-                  multiline={false}
-                  className={`px-4 py-3 text-base`}
-                  style={{ color: textColor }}
-                />
-              </Textarea>
+              <NumberInput
+                value={customFactor}
+                onChangeText={setCustomFactor}
+                placeholder="1.3"
+                inputTitle="Enter Reciprocity Factor"
+                step={0.1}
+              />
               <Text
                 className="text-xs italic"
                 style={[styles.infoText, { color: textMuted }]}
@@ -128,70 +107,44 @@ export default function ReciprocityCalculator() {
             >
               Metered Exposure Time
             </Text>
-            <Textarea
-              className={`w-full rounded-xl border`}
-              style={{
-                backgroundColor: inputBackground,
-                borderColor: timeFormatError ? errorColor : borderColor,
-                height: 48,
-              }}
-            >
-              <TextareaInput
-                value={meteredTime}
-                onChangeText={setMeteredTime}
-                placeholder="e.g. 30s, 1m30s, 2h"
-                placeholderTextColor={textMuted}
-                multiline={false}
-                className={`px-4 py-3 text-base`}
-                style={{ color: textColor }}
-              />
-            </Textarea>
-            {formattedTime && (
-              <Text
-                className="text-xs italic"
-                style={[styles.helpText, { color: textMuted }]}
-              >
-                Parsed as: {formattedTime}
-              </Text>
-            )}
-            {timeFormatError && (
-              <Text
-                className="text-xs font-medium"
-                style={[styles.errorText, { color: errorColor }]}
-              >
-                {timeFormatError}
-              </Text>
-            )}
+            <TimeInput
+              value={meteredTime}
+              onChangeText={setMeteredTime}
+              placeholder="e.g. 30, 1.5m, 2h"
+              inputTitle="Enter Exposure Time"
+              error={timeFormatError || undefined}
+              helpText={
+                formattedTime ? `Parsed as: ${formattedTime}` : undefined
+              }
+            />
           </Box>
 
-          {/* Preset Buttons */}
-          <Box className="w-full gap-2">
+          {/* Quick Presets */}
+          <Box className="w-full gap-3">
             <Text
               className="text-base font-medium"
               style={[styles.inputLabel, { color: textColor }]}
             >
-              Common Presets
+              Quick Presets
             </Text>
-            <Box
-              className="flex-row flex-wrap gap-3"
-              style={styles.presetsContainer}
-            >
+            <Box style={styles.presetsGrid}>
               {EXPOSURE_PRESETS.map((seconds: number) => (
                 <Button
                   key={seconds}
                   variant="outline"
                   action="default"
                   size="sm"
-                  className={`min-w-20 rounded-xl border`}
-                  style={{
-                    borderColor,
-                    backgroundColor: inputBackground,
-                  }}
+                  style={[
+                    styles.presetButton,
+                    {
+                      borderColor,
+                      backgroundColor: inputBackground,
+                    },
+                  ]}
                   onPress={() => setMeteredTime(seconds.toString() + "s")}
                 >
                   <ButtonText
-                    className={`text-sm font-medium`}
-                    style={{ color: textColor }}
+                    style={[styles.presetButtonText, { color: textColor }]}
                   >
                     {formatTime(seconds)}
                   </ButtonText>
@@ -384,11 +337,26 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "700",
   },
-  presetsContainer: {
+  presetsGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 12,
-    marginTop: 8,
+    gap: 10,
+    justifyContent: "flex-start",
+  },
+  presetButton: {
+    borderRadius: 10,
+    borderWidth: 1,
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    minWidth: 60,
+    height: 40,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  presetButtonText: {
+    fontSize: 13,
+    fontWeight: "500",
+    textAlign: "center",
   },
   helpText: {
     fontSize: 12,
