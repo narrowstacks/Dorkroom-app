@@ -4,7 +4,6 @@ import { AnimatedPreview } from "@/components/border-calculator";
 import { AnimatedPreview as AnimatedPreviewReanimated } from "@/components/border-calculator/AnimatedPreview.reanimated";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { useIsReanimatedEnabled } from "@/hooks/useAnimationExperiment";
-import { debugLog, debugLogPerformance } from "@/utils/debugLogger";
 import type { BorderCalculation } from "@/types/borderTypes";
 
 interface CompactPreviewProps {
@@ -28,22 +27,11 @@ export const CompactPreview: React.FC<CompactPreviewProps> = React.memo(
       return Math.min(scaleX, scaleY, 1); // Don't scale up, only down if needed
     }, [calculation.previewWidth, calculation.previewHeight]);
 
-    // Log which animation engine is being used
-    useMemo(() => {
-      const engine = isReanimatedEnabled ? "Reanimated v3" : "Legacy Animated";
-      debugLog(`🎭 [COMPACT PREVIEW] Using animation engine: ${engine}`);
-      debugLogPerformance("Animation Engine Selection", {
-        engine,
-        isReanimatedEnabled,
-        isDev: __DEV__,
-        timestamp: new Date().toISOString(),
-      });
-    }, [isReanimatedEnabled]);
-
-    // Select the appropriate AnimatedPreview component
-    const AnimatedPreviewComponent = isReanimatedEnabled
-      ? AnimatedPreviewReanimated
-      : AnimatedPreview;
+    // Select the appropriate AnimatedPreview component (cached to avoid re-selection)
+    const AnimatedPreviewComponent = useMemo(
+      () => (isReanimatedEnabled ? AnimatedPreviewReanimated : AnimatedPreview),
+      [isReanimatedEnabled],
+    );
 
     return (
       <Box

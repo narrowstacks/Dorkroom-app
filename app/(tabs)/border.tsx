@@ -214,17 +214,7 @@ export default function BorderCalculator() {
   );
 
   React.useEffect(() => {
-    debugLog(
-      "📋 [BORDER CALC] Desktop preset effect triggered, loadedPresetFromUrl:",
-      loadedPresetFromUrl,
-      "shouldUseMobileLayout:",
-      shouldUseMobileLayout,
-    );
     if (loadedPresetFromUrl && !shouldUseMobileLayout) {
-      debugLog(
-        "📋 [BORDER CALC] Desktop applying preset:",
-        loadedPresetFromUrl,
-      );
       applyPreset(loadedPresetFromUrl.settings);
       setPresetName(loadedPresetFromUrl.name);
       // Create a temporary preset object to indicate it's loaded, but not saved yet
@@ -243,12 +233,6 @@ export default function BorderCalculator() {
         ? `Shared preset "${loadedPresetFromUrl.name}" loaded!`
         : `Last settings "${loadedPresetFromUrl.name}" loaded`;
 
-      debugLog(
-        "📋 [BORDER CALC] Desktop showing toast, isFromUrl:",
-        isFromUrl,
-        "title:",
-        toastTitle,
-      );
       toast.show({
         placement: "top",
         render: ({ id }) => (
@@ -262,10 +246,6 @@ export default function BorderCalculator() {
 
       // Clear the preset after processing to prevent it from persisting
       clearLoadedPreset();
-    } else if (loadedPresetFromUrl && shouldUseMobileLayout) {
-      debugLog(
-        "📋 [BORDER CALC] Mobile layout detected, skipping desktop preset application (mobile will handle it)",
-      );
     }
   }, [loadedPresetFromUrl, shouldUseMobileLayout, clearLoadedPreset]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -416,10 +396,6 @@ export default function BorderCalculator() {
 
   // Use mobile layout for mobile devices
   if (shouldUseMobileLayout) {
-    debugLog(
-      "📋 [BORDER CALC] Using mobile layout, passing loadedPresetFromUrl:",
-      loadedPresetFromUrl,
-    );
     return (
       <>
         <AppBanner

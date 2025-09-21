@@ -55,6 +55,9 @@ export const ShareModal: React.FC<ShareModalProps> = ({
   const isMobileWeb = isRunningOnMobileWeb();
 
   const shareData = React.useMemo(() => {
+    // Only generate URLs when the modal is actually visible to avoid unnecessary computation
+    if (!isVisible) return null;
+
     const preset = { name: presetName, settings: currentSettings };
     const encoded = encodePreset(preset);
 
@@ -62,7 +65,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
 
     const { webUrl, nativeUrl } = generateSharingUrls(encoded);
     return { webUrl, nativeUrl, preset };
-  }, [currentSettings, presetName]);
+  }, [isVisible, currentSettings, presetName]);
 
   const copyToClipboard = async (url: string, label: string) => {
     try {

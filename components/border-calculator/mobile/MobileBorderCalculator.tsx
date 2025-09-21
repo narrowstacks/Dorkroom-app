@@ -146,25 +146,10 @@ export const MobileBorderCalculator: React.FC<MobileBorderCalculatorProps> = ({
 
   const { presets, addPreset, updatePreset, removePreset } = useBorderPresets();
 
-  // Optimized settings comparison using more efficient approach
+  // Ultra-optimized settings comparison using concatenation for better performance
   const currentSettingsHash = useMemo(() => {
-    // Use array join for better performance than string template
-    return [
-      aspectRatio,
-      paperSize,
-      customAspectWidth,
-      customAspectHeight,
-      customPaperWidth,
-      customPaperHeight,
-      minBorder,
-      enableOffset,
-      ignoreMinBorder,
-      horizontalOffset,
-      verticalOffset,
-      showBlades,
-      isLandscape,
-      isRatioFlipped,
-    ].join("|");
+    // Use direct string concatenation for maximum performance
+    return `${aspectRatio}|${paperSize}|${customAspectWidth}|${customAspectHeight}|${customPaperWidth}|${customPaperHeight}|${minBorder}|${enableOffset}|${ignoreMinBorder}|${horizontalOffset}|${verticalOffset}|${showBlades}|${isLandscape}|${isRatioFlipped}`;
   }, [
     aspectRatio,
     paperSize,
@@ -184,23 +169,8 @@ export const MobileBorderCalculator: React.FC<MobileBorderCalculatorProps> = ({
 
   const presetSettingsHash = useMemo(() => {
     if (!currentPreset) return null;
-    const settings = currentPreset.settings;
-    return [
-      settings.aspectRatio,
-      settings.paperSize,
-      settings.customAspectWidth,
-      settings.customAspectHeight,
-      settings.customPaperWidth,
-      settings.customPaperHeight,
-      settings.minBorder,
-      settings.enableOffset,
-      settings.ignoreMinBorder,
-      settings.horizontalOffset,
-      settings.verticalOffset,
-      settings.showBlades,
-      settings.isLandscape,
-      settings.isRatioFlipped,
-    ].join("|");
+    const s = currentPreset.settings;
+    return `${s.aspectRatio}|${s.paperSize}|${s.customAspectWidth}|${s.customAspectHeight}|${s.customPaperWidth}|${s.customPaperHeight}|${s.minBorder}|${s.enableOffset}|${s.ignoreMinBorder}|${s.horizontalOffset}|${s.verticalOffset}|${s.showBlades}|${s.isLandscape}|${s.isRatioFlipped}`;
   }, [currentPreset]);
 
   // Reset current preset when settings change (much faster than deep object comparison)
@@ -213,9 +183,6 @@ export const MobileBorderCalculator: React.FC<MobileBorderCalculatorProps> = ({
   // Handle loaded preset from URL
   useEffect(() => {
     if (!loadedPresetFromUrl) {
-      debugLog(
-        "📱 [MOBILE CALC] No loadedPresetFromUrl, resetting applied state",
-      );
       setHasAppliedLoadedPreset(false);
       setLastAppliedPresetId(null);
       return;
@@ -224,23 +191,8 @@ export const MobileBorderCalculator: React.FC<MobileBorderCalculatorProps> = ({
     // Create a unique ID for this preset based on its content
     const presetId = `${loadedPresetFromUrl.name}-${JSON.stringify(loadedPresetFromUrl.settings)}`;
 
-    debugLog(
-      "📱 [MOBILE CALC] Mobile preset effect triggered, loadedPresetFromUrl:",
-      loadedPresetFromUrl,
-      "hasAppliedLoadedPreset:",
-      hasAppliedLoadedPreset,
-      "lastAppliedPresetId:",
-      lastAppliedPresetId,
-      "currentPresetId:",
-      presetId,
-    );
-
     // Check if this is a new preset (different from the last applied one)
     if (presetId !== lastAppliedPresetId) {
-      debugLog(
-        "📱 [MOBILE CALC] New preset detected, applying:",
-        loadedPresetFromUrl,
-      );
       applyPreset(loadedPresetFromUrl.settings);
       // Create a temporary preset object to indicate it's loaded
       const tempPreset = {
@@ -258,13 +210,6 @@ export const MobileBorderCalculator: React.FC<MobileBorderCalculatorProps> = ({
         ? `Shared preset "${loadedPresetFromUrl.name}" loaded!`
         : `Last settings "${loadedPresetFromUrl.name}" loaded`;
 
-      debugLog(
-        "📱 [MOBILE CALC] Mobile showing toast, isFromUrl:",
-        isFromUrl,
-        "title:",
-        toastTitle,
-      );
-
       toast.show({
         placement: "top",
         render: ({ id }) => (
@@ -280,8 +225,6 @@ export const MobileBorderCalculator: React.FC<MobileBorderCalculatorProps> = ({
       if (clearLoadedPreset) {
         clearLoadedPreset();
       }
-    } else {
-      debugLog("📱 [MOBILE CALC] Same preset already applied, skipping");
     }
   }, [
     loadedPresetFromUrl,
@@ -292,36 +235,28 @@ export const MobileBorderCalculator: React.FC<MobileBorderCalculatorProps> = ({
     hasAppliedLoadedPreset,
   ]);
 
-  // Memoized helper functions for display values to prevent parseFloat on every render
+  // Heavily optimized display values with minimal computation
   const paperSizeDisplayValue = useMemo(() => {
-    if (paperSize === "custom") {
-      return `${customPaperWidth}" × ${customPaperHeight}"`;
-    }
-    return paperSize;
+    return paperSize === "custom"
+      ? `${customPaperWidth}" × ${customPaperHeight}"`
+      : paperSize;
   }, [paperSize, customPaperWidth, customPaperHeight]);
 
   const aspectRatioDisplayValue = useMemo(() => {
-    if (aspectRatio === "custom") {
-      return `${customAspectWidth}:${customAspectHeight}`;
-    }
-    return aspectRatio;
+    return aspectRatio === "custom"
+      ? `${customAspectWidth}:${customAspectHeight}`
+      : aspectRatio;
   }, [aspectRatio, customAspectWidth, customAspectHeight]);
 
   const borderSizeDisplayValue = useMemo(() => {
-    const borderValue = parseFloat(String(minBorder));
-    return `${(isNaN(borderValue) ? 0 : borderValue).toFixed(2)}"`;
+    const val = +minBorder || 0; // Fastest number conversion
+    return `${val.toFixed(2)}"`;
   }, [minBorder]);
 
   const positionDisplayValue = useMemo(() => {
     if (!enableOffset) return "Centered";
-    const hOffset =
-      typeof horizontalOffset === "number"
-        ? horizontalOffset
-        : parseFloat(String(horizontalOffset)) || 0;
-    const vOffset =
-      typeof verticalOffset === "number"
-        ? verticalOffset
-        : parseFloat(String(verticalOffset)) || 0;
+    const hOffset = +horizontalOffset || 0; // Fastest number conversion
+    const vOffset = +verticalOffset || 0;
     return `H:${hOffset.toFixed(1)} V:${vOffset.toFixed(1)}`;
   }, [enableOffset, horizontalOffset, verticalOffset]);
 
@@ -332,41 +267,20 @@ export const MobileBorderCalculator: React.FC<MobileBorderCalculatorProps> = ({
       : `${currentPreset.name}`;
   }, [currentPreset]);
 
-  // Current settings for sharing
+  // Current settings for sharing - optimized number conversion
   const currentSettings = useMemo(
     () => ({
       aspectRatio,
       paperSize,
-      customAspectWidth:
-        typeof customAspectWidth === "number"
-          ? customAspectWidth
-          : parseFloat(String(customAspectWidth)) || 0,
-      customAspectHeight:
-        typeof customAspectHeight === "number"
-          ? customAspectHeight
-          : parseFloat(String(customAspectHeight)) || 0,
-      customPaperWidth:
-        typeof customPaperWidth === "number"
-          ? customPaperWidth
-          : parseFloat(String(customPaperWidth)) || 0,
-      customPaperHeight:
-        typeof customPaperHeight === "number"
-          ? customPaperHeight
-          : parseFloat(String(customPaperHeight)) || 0,
-      minBorder:
-        typeof minBorder === "number"
-          ? minBorder
-          : parseFloat(String(minBorder)) || 0,
+      customAspectWidth: +customAspectWidth || 0,
+      customAspectHeight: +customAspectHeight || 0,
+      customPaperWidth: +customPaperWidth || 0,
+      customPaperHeight: +customPaperHeight || 0,
+      minBorder: +minBorder || 0,
       enableOffset,
       ignoreMinBorder,
-      horizontalOffset:
-        typeof horizontalOffset === "number"
-          ? horizontalOffset
-          : parseFloat(String(horizontalOffset)) || 0,
-      verticalOffset:
-        typeof verticalOffset === "number"
-          ? verticalOffset
-          : parseFloat(String(verticalOffset)) || 0,
+      horizontalOffset: +horizontalOffset || 0,
+      verticalOffset: +verticalOffset || 0,
       showBlades,
       isLandscape,
       isRatioFlipped,
@@ -573,10 +487,7 @@ export const MobileBorderCalculator: React.FC<MobileBorderCalculatorProps> = ({
                 {activeSection === "borderSize" && (
                   <BorderSizeSection
                     onClose={closeDrawer}
-                    minBorder={(() => {
-                      const parsed = parseFloat(String(minBorder));
-                      return isNaN(parsed) ? 0 : parsed;
-                    })()}
+                    minBorder={+minBorder || 0}
                     setMinBorder={(value: number) =>
                       setMinBorder(String(value))
                     }
@@ -591,19 +502,11 @@ export const MobileBorderCalculator: React.FC<MobileBorderCalculatorProps> = ({
                     setEnableOffset={setEnableOffset}
                     ignoreMinBorder={ignoreMinBorder}
                     setIgnoreMinBorder={setIgnoreMinBorder}
-                    horizontalOffset={
-                      typeof horizontalOffset === "number"
-                        ? horizontalOffset
-                        : parseFloat(String(horizontalOffset)) || 0
-                    }
+                    horizontalOffset={+horizontalOffset || 0}
                     setHorizontalOffset={(value: number) =>
                       setHorizontalOffset(String(value))
                     }
-                    verticalOffset={
-                      typeof verticalOffset === "number"
-                        ? verticalOffset
-                        : parseFloat(String(verticalOffset)) || 0
-                    }
+                    verticalOffset={+verticalOffset || 0}
                     setVerticalOffset={(value: number) =>
                       setVerticalOffset(String(value))
                     }
@@ -646,20 +549,15 @@ export const MobileBorderCalculator: React.FC<MobileBorderCalculatorProps> = ({
                     getCurrentSettings={() => ({
                       aspectRatio,
                       paperSize,
-                      customAspectWidth:
-                        parseFloat(String(customAspectWidth)) || 0,
-                      customAspectHeight:
-                        parseFloat(String(customAspectHeight)) || 0,
-                      customPaperWidth:
-                        parseFloat(String(customPaperWidth)) || 0,
-                      customPaperHeight:
-                        parseFloat(String(customPaperHeight)) || 0,
-                      minBorder: parseFloat(String(minBorder)) || 0,
+                      customAspectWidth: +customAspectWidth || 0,
+                      customAspectHeight: +customAspectHeight || 0,
+                      customPaperWidth: +customPaperWidth || 0,
+                      customPaperHeight: +customPaperHeight || 0,
+                      minBorder: +minBorder || 0,
                       enableOffset,
                       ignoreMinBorder,
-                      horizontalOffset:
-                        parseFloat(String(horizontalOffset)) || 0,
-                      verticalOffset: parseFloat(String(verticalOffset)) || 0,
+                      horizontalOffset: +horizontalOffset || 0,
+                      verticalOffset: +verticalOffset || 0,
                       showBlades,
                       isLandscape,
                       isRatioFlipped,
