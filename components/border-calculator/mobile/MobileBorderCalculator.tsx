@@ -431,21 +431,6 @@ export const MobileBorderCalculator: React.FC<MobileBorderCalculatorProps> = ({
     setIsDrawerOpen(false);
   };
 
-  // Animation engine toggle handler (dev only)
-  const toggleAnimationEngine = () => {
-    if (!__DEV__) return;
-
-    const newEngine = engine === "legacy" ? "reanimated" : "legacy";
-    debugLog(
-      `🔄 [DEV SWITCH] Switching animation engine from ${engine} to ${newEngine}`,
-    );
-    setEngine(newEngine);
-  };
-
-  if (!calculation) {
-    return null;
-  }
-
   return (
     <ScrollView
       style={{ flex: 1, backgroundColor }}
