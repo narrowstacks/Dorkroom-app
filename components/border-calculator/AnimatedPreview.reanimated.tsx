@@ -18,8 +18,6 @@ interface AnimatedPreviewProps {
 
 export const AnimatedPreview = React.memo(
   ({ calculation, showBlades, borderColor }: AnimatedPreviewProps) => {
-    debugLog("🔄 [REANIMATED PREVIEW] Render with calculation:", !!calculation);
-
     // Shared values for Reanimated - ALL animations use native thread
     const printTranslateX = useSharedValue(0);
     const printTranslateY = useSharedValue(0);
@@ -87,8 +85,6 @@ export const AnimatedPreview = React.memo(
     useEffect(() => {
       if (!transformValues) return;
 
-      debugLog("🎬 [REANIMATED] Starting animation update");
-
       // Use withTiming for smooth 60fps animations on native thread
       const animationConfig = {
         duration: 150,
@@ -129,7 +125,6 @@ export const AnimatedPreview = React.memo(
         (finished) => {
           if (finished) {
             // Simple completion log without object sharing issues
-            runOnJS(debugLog)("🎬 [REANIMATED] Animation cycle complete");
           }
         },
       );
@@ -147,7 +142,6 @@ export const AnimatedPreview = React.memo(
 
     // Update blade opacity
     useEffect(() => {
-      debugLog("🎬 [REANIMATED] Updating blade opacity:", showBlades);
       bladeOpacity.value = withTiming(showBlades ? 1 : 0, { duration: 100 });
     }, [showBlades, bladeOpacity]);
 
@@ -172,21 +166,9 @@ export const AnimatedPreview = React.memo(
           previousValue !== null &&
           Math.abs(currentValue - previousValue) > 0.1
         ) {
-          runOnJS(debugLog)(
-            "🎬 [REANIMATED WORKLET] Significant position change",
-          );
+          runOnJS(debugLog)();
         }
       },
-    );
-
-    if (!calculation) {
-      debugLog("❌ [REANIMATED PREVIEW] No calculation provided");
-      return null;
-    }
-
-    debugLog(
-      "✅ [REANIMATED PREVIEW] Rendering with dimensions:",
-      staticDimensions,
     );
 
     return (

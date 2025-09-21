@@ -119,12 +119,6 @@ export const usePerformanceMonitoring = (
 
       // The actual calculations will be measured by the calculation hooks
       // This just sets up the batch tracking
-
-      if (__DEV__ && calculationCountRef.current % 10 === 0) {
-        console.log(
-          `📊 Border calculator: ${calculationCountRef.current} calculations tracked`,
-        );
-      }
     }
 
     lastStateRef.current = currentState;
