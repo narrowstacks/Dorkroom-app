@@ -16,7 +16,6 @@ import { useWindowDimensions } from "react-native";
 import { EASEL_SIZE_MAP } from "@/constants/border";
 import { calculateBladeThickness } from "@/utils/borderCalculations";
 import { useWorkerCalculation } from "../useWorkerCalculation";
-import { usePerformanceMonitoring } from "./usePerformanceMonitoring";
 import type {
   BorderCalculatorState,
   OrientedDimensions,
@@ -46,7 +45,6 @@ export const useOptimizedGeometryCalculations = (
   paperSizeWarning: string | null,
 ) => {
   const { width: winW, height: winH } = useWindowDimensions();
-  const { measureCalculation } = usePerformanceMonitoring(state);
 
   // Cache refs for performance
   const lastInputRef = useRef<any>(null);

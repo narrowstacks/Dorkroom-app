@@ -29,10 +29,6 @@ export const AnimatedBlade = React.memo(
     containerWidth = 100,
     containerHeight = 100,
   }: AnimatedBladeProps) => {
-    debugLog(
-      `🔧 [REANIMATED BLADE] Rendering ${orientation} ${position} blade`,
-    );
-
     // Memoize common styles to prevent object recreation
     const commonStyle = useMemo(
       () => ({
