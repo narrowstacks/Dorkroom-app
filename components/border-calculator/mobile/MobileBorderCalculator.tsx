@@ -542,27 +542,6 @@ export const MobileBorderCalculator: React.FC<MobileBorderCalculatorProps> = ({
             </HStack>
           </VStack>
 
-          {/* Dev Only: Animation Engine Toggle */}
-          {__DEV__ && (
-            <Button
-              onPress={toggleAnimationEngine}
-              variant="outline"
-              action="secondary"
-              size="sm"
-              style={{
-                marginTop: 8,
-                opacity: isAnimationLoading ? 0.5 : 1,
-              }}
-              disabled={isAnimationLoading}
-            >
-              <ButtonIcon as={Zap} size="sm" />
-              <ButtonText style={{ marginLeft: 8, fontSize: 14 }}>
-                Animation:{" "}
-                {engine === "reanimated" ? "Reanimated v3" : "Legacy Animated"}
-              </ButtonText>
-            </Button>
-          )}
-
           {/* Reset Button */}
           <Button
             onPress={resetToDefaults}
@@ -582,7 +561,7 @@ export const MobileBorderCalculator: React.FC<MobileBorderCalculatorProps> = ({
             size="md"
             anchor="bottom"
           >
-            <DrawerContent style={{ flex: 1, backgroundColor }}>
+            <DrawerContent style={{ backgroundColor }}>
               <DrawerBody style={{ flex: 1, backgroundColor, padding: 0 }}>
                 {activeSection === "paperSize" && (
                   <PaperSizeSection
