@@ -37,6 +37,10 @@ export const MOBILE_WEB_APP_CONFIG = {
   // Currently disabled for production until app launch
   ENABLE_APP_LINKS_IN_PRODUCTION: false,
 
+  // 🚫 TEMPORARY DISABLE: Set to true to temporarily disable the app banner
+  // This overrides all other settings and completely disables the banner
+  TEMPORARILY_DISABLE_APP_BANNER: true,
+
   // Always enable in development for testing
   get ENABLE_APP_LINKS() {
     return __DEV__ || this.ENABLE_APP_LINKS_IN_PRODUCTION;
@@ -44,6 +48,10 @@ export const MOBILE_WEB_APP_CONFIG = {
 
   // Control app banner/popup visibility
   get SHOW_APP_BANNER() {
+    // If temporarily disabled, never show the banner
+    if (this.TEMPORARILY_DISABLE_APP_BANNER) {
+      return false;
+    }
     return __DEV__ || this.ENABLE_APP_LINKS_IN_PRODUCTION;
   },
 };
