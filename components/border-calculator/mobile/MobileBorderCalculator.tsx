@@ -47,6 +47,7 @@ import {
   BookOpen,
   Share,
   Zap,
+  Crop,
 } from "lucide-react-native";
 
 // Border calculator functionality
@@ -505,9 +506,9 @@ export const MobileBorderCalculator: React.FC<MobileBorderCalculatorProps> = ({
             <HStack space="sm" style={{ flex: 1 }}>
               <Box style={{ flex: 1 }}>
                 <SettingsButton
-                  label="Show Blades"
+                  label="Blades"
                   onPress={() => setShowBlades(!showBlades)}
-                  icon={showBlades ? Eye : EyeOff}
+                  icon={showBlades ? EyeOff : Crop}
                   showChevron={false}
                   centerLabel={true}
                 />
