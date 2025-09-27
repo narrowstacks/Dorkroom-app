@@ -1,3 +1,7 @@
+**DEPRECIATED AS MAIN REPO -- MOVED TO [narrowstacks/dorkroom](https://github.com/narrowstacks/dorkroom) FOR MAIN DEVELOPMENT!**
+
+Eventually this React Native app will get merged into the monorepo linked above, but as it stands, I won't be updating this specific repo further!
+
 # Dorkroom
 
 Dorkroom is a cross-platform React Native application built with Expo, designed to provide photographers with essential calculators for darkroom printing, film developing, and photography workflows. The app features multiple specialized calculators with real-time calculations, preset management, and responsive design across mobile, tablet, and web platforms.
