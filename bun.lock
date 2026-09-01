@@ -1,5 +1,6 @@
 {
   "lockfileVersion": 1,
+  "configVersion": 0,
   "workspaces": {
     "": {
       "name": "dorkroomreact",
@@ -23,7 +24,7 @@
         "@react-native-community/cli": "^14.1.2",
         "@react-native-community/slider": "5.0.1",
         "@react-native-picker/picker": "2.11.1",
-        "@react-native/normalize-colors": "^0.79.5",
+        "@react-native/normalize-colors": "^0.87.0",
         "@shopify/react-native-skia": "2.2.12",
         "@vercel/speed-insights": "^1.2.0",
         "expo": "54.0.8",
@@ -748,7 +749,7 @@
 
     "@react-native/js-polyfills": ["@react-native/js-polyfills@0.81.4", "", {}, "sha512-sr42FaypKXJHMVHhgSbu2f/ZJfrLzgaoQ+HdpRvKEiEh2mhFf6XzZwecyLBvWqf2pMPZa+CpPfNPiejXjKEy8w=="],
 
-    "@react-native/normalize-colors": ["@react-native/normalize-colors@0.79.6", "", {}, "sha512-0v2/ruY7eeKun4BeKu+GcfO+SHBdl0LJn4ZFzTzjHdWES0Cn+ONqKljYaIv8p9MV2Hx/kcdEvbY4lWI34jC/mQ=="],
+    "@react-native/normalize-colors": ["@react-native/normalize-colors@0.87.1", "", {}, "sha512-8+AutemzX+a7cuKgTUyb7JUk3sFYgLyrSnlTLrL6LuW/LKDE+FYE8lJGWYhJPJcE51Ge1D8yRzxgQEdEFZtuIw=="],
 
     "@react-native/virtualized-lists": ["@react-native/virtualized-lists@0.81.4", "", { "dependencies": { "invariant": "^2.2.4", "nullthrows": "^1.1.1" }, "peerDependencies": { "@types/react": "^19.1.0", "react": "*", "react-native": "*" }, "optionalPeers": ["@types/react"] }, "sha512-hBM+rMyL6Wm1Q4f/WpqGsaCojKSNUBqAXLABNGoWm1vabZ7cSnARMxBvA/2vo3hLcoR4v7zDK8tkKm9+O0LjVA=="],
 
