@@ -75,7 +75,7 @@
     "@react-native-community/slider": "5.0.1",
     "@react-native-picker/picker": "2.11.1",
     "@react-native/normalize-colors": "^0.79.5",
-    "@shopify/react-native-skia": "2.2.12",
+    "@shopify/react-native-skia": "2.11.2",
     "@vercel/speed-insights": "^1.2.0",
     "expo": "54.0.8",
     "expo-blur": "~15.0.7",
