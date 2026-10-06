@@ -77,7 +77,7 @@
     "@react-native/normalize-colors": "^0.79.5",
     "@shopify/react-native-skia": "2.2.12",
     "@vercel/speed-insights": "^1.2.0",
-    "expo": "54.0.8",
+    "expo": "54.0.37",
     "expo-blur": "~15.0.7",
     "expo-clipboard": "~8.0.7",
     "expo-constants": "~18.0.9",
