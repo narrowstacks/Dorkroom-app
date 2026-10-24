@@ -55,7 +55,7 @@
     "preset": "jest-expo"
   },
   "dependencies": {
-    "@expo/html-elements": "^0.4.3",
+    "@expo/html-elements": "^0.13.0",
     "@expo/metro-runtime": "^6.1.2",
     "@expo/ui": "~0.2.0-beta.3",
     "@expo/vector-icons": "^15.0.2",
